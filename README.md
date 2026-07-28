@@ -32,28 +32,9 @@ reopened later to keep going.
 
 ---
 
-## Design
+## Target Design
 
-```
-┌──────────────┐   JSON/SSE   ┌────────────────────────────────────────┐   SQL   ┌───────────┐
-│   Browser    │ ───────────▶ │  FastAPI                               │ ──────▶ │ Postgres  │
-│              │              │                                        │         │           │
-│ Jinja + JS   │ ◀─────────── │  api/     routes (thin)                │ ◀────── │           │
-└──────────────┘              │    ↓                                   │         └───────────┘
-                              │  services/    orchestration            │
-                              │    ↓                                   │
-                              │  repositories/    all SQL lives here   │
-                              │    ↓                                   │
-                              │  ┌──────────────────────────────────┐  │
-                              │  │  LangGraph ReAct agent           │  │
-                              │  │  compiled once at startup        │  │
-                              │  └───────────────┬──────────────────┘  │
-                              └──────────────────┼─────────────────────┘
-                                                 ▼
-                                          ┌────────────┐
-                                          │  Groq API  │
-                                          └────────────┘
-```
+![architecture.svg](architecture.svg)
 
 Strict layering: routes contain no SQL and no prompt building, repositories know
 nothing about HTTP, and LangChain objects never leave `llm/`.
