@@ -1,50 +1,24 @@
+import uuid
 from datetime import datetime
-from typing import Annotated
-from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, StringConstraints
+from sqlalchemy import DateTime, ForeignKey, Index, func, text
+from sqlalchemy.orm import mapped_column, Mapped
 
-from model.message import MessageOut
-
-PersonaKey = Annotated[
-    str,
-    StringConstraints(strip_whitespace=True, min_length=1, max_length=50),
-]
+from model.base import Base
 
 
-class ConversationCreate(BaseModel):
-    """Body of POST /conversations.
+class Conversations(Base):
+    __tablename__ = "conversations"
 
-    A typo like "grumy_pirate" is still a valid string, so the service layer
-    checks the persona exists and returns 404 if it does not.
-    """
-
-    model_config = ConfigDict(
-        json_schema_extra={"example": {"persona_key": "grumpy_pirate"}}
+    __table_args__ = (
+        Index("ix_conversations_user_id_updated_at", "user_id", text("updated_at DESC")),
     )
 
-    persona_key: PersonaKey
-
-
-class ConversationOut(BaseModel):
-    """A conversation without its messages.
-
-    Used for both the POST /conversations response and each row of the
-    sidebar list — they are the same shape.
-    """
-
-    model_config = ConfigDict(from_attributes=True)
-
-    id: UUID
-    persona_key: str
-    title: str | None
-    updated_at: datetime
-
-
-class ConversationDetail(ConversationOut):
-    """Response of GET /conversations/{id} — everything the thread screen needs.
-
-    `messages` is the last 50, oldest first: the order they render in.
-    """
-
-    messages: list[MessageOut]
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
+    persona_key: Mapped[str] = mapped_column(ForeignKey("personas.key"))
+    title: Mapped[str | None]
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now()
+    )

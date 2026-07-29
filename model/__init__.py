@@ -1,37 +1,20 @@
-"""API request and response schemas.
+"""SQLAlchemy ORM models.
 
-These are the shapes FastAPI validates and serialises — they define the public
-contract and drive the generated Swagger docs.
-
-They are NOT database models. SQLAlchemy tables live separately (phase 2).
+Every model must be imported here. Importing a model registers its table on
+``Base.metadata``, which is what Alembic reads when generating migrations.
+A model missing from this list is invisible to ``alembic --autogenerate``.
 """
 
-from model.conversation import (
-    ConversationCreate,
-    ConversationDetail,
-    ConversationOut,
-)
-from model.message import (
-    DoneEvent,
-    ErrorEvent,
-    MessageCreate,
-    MessageOut,
-    MessageTurnOut,
-    Role,
-    TokenEvent,
-)
-from model.persona import PersonaOut
+from model.base import Base
+from model.conversation import Conversations
+from model.message import Messages
+from model.persona import Personas
+from model.user import Users
 
 __all__ = [
-    "PersonaOut",
-    "ConversationCreate",
-    "ConversationOut",
-    "ConversationDetail",
-    "MessageCreate",
-    "MessageOut",
-    "MessageTurnOut",
-    "Role",
-    "TokenEvent",
-    "DoneEvent",
-    "ErrorEvent",
+    "Base",
+    "Personas",
+    "Users",
+    "Conversations",
+    "Messages",
 ]

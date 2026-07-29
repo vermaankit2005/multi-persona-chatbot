@@ -1,19 +1,11 @@
-from pydantic import BaseModel, ConfigDict
+from sqlalchemy.orm import Mapped, mapped_column
+
+from model.base import Base
 
 
-class PersonaOut(BaseModel):
-    """A persona as shown in the picker.
+class Personas(Base):
+    __tablename__ = "personas"
 
-    `system_prompt` is deliberately absent — it is internal and must never
-    reach the client.
-    """
-
-    model_config = ConfigDict(
-        from_attributes=True,
-        json_schema_extra={
-            "example": {"key": "grumpy_pirate", "name": "Grumpy Pirate"}
-        },
-    )
-
-    key: str
-    name: str
+    key: Mapped[str] = mapped_column(primary_key=True)
+    name: Mapped[str]
+    system_prompt: Mapped[str]

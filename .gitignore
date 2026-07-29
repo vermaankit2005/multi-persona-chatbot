@@ -5,6 +5,7 @@
 
 # --- Planning docs (kept local) ----------------------------------------------
 docs/
+CLAUDE.md
 
 # --- Python ------------------------------------------------------------------
 __pycache__/
@@ -43,3 +44,4 @@ desktop.ini
 *.db
 *.sqlite3
 *.log
+*.stackdump
