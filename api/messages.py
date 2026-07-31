@@ -1,32 +1,72 @@
-from fastapi import Body, Depends, APIRouter
+from uuid import UUID
+
+from fastapi import Body, Depends, APIRouter, HTTPException
 from fastapi import Request
-from langchain_core.messages import SystemMessage, HumanMessage
+from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 from sqlalchemy.orm import Session
 
 from db import get_db_session
-from repositories.persona_repo import get_persona
+from deps import Role
+from model import Messages
+from repositories.conversation_repo import db_get_conversation_by_id
+from repositories.message_repo import db_create_message, db_get_recent_messages_for_conversation
+from schemas import MessageTurnOut, MessageCreate, MessageOut
 
 router = APIRouter(tags=["messages"])
 
-chat_history = {}  # Dictionary to store chat history for each chat_id
 
+@router.post("/conversations/{conversation_id}/messages", response_model=MessageTurnOut,
+             summary="Send a message, get a reply")
+def send_message(request: Request, messageContent: MessageCreate = Body(..., description="The content of the message"),
+                 conversation_id: UUID = None, db: Session = Depends(get_db_session)):
+    if conversation_id is None:
+        raise HTTPException(status_code=400, detail="conversation_id is required")
 
-@router.post("/chat", response_model=str)
-async def chat(request: Request,
-               question: str = Body(..., description="User's question to the assistant"),
-               chat_id: str = Body(..., description="Unique chat session ID"),
-               persona: str = Body(..., description="Persona to use for the chat"),
-               db: Session = Depends(get_db_session),
-               ):
-    agent = request.app.state.agent  # Access the agent from the app state
+    conversation = db_get_conversation_by_id(conversation_id, db)
+    if conversation is None:
+        raise HTTPException(status_code=404, detail="Conversation not found for the given ID")
 
-    if chat_id not in chat_history:
-        chat_history[chat_id] = [
-            SystemMessage(content=get_persona(db,
-                                              persona).system_prompt)]  # Initialize chat history with system message for the persona
+    # 1. Add the latest human message to the database
+    message = Messages(
+        conversation_id=conversation_id,
+        role=Role.USER.value,
+        content=messageContent.content
+    )
 
-    chat_history[chat_id].append(HumanMessage(content=question))
+    # 2. Get the recent messages for the conversation to provide context to the agent
+    message_for_agent = db_get_recent_messages_for_conversation(conversation_id, db)
 
-    response = await agent.ainvoke({"messages": chat_history[chat_id]})
-    chat_history[chat_id].append(response["messages"][-1])
-    return response["messages"][-1].content
+    # 3. Store the latest human message in the database
+    latest_human_message = db_create_message(message, db)
+
+    # 4. Convert messages to langchain format (SystemMessage for the persona already added during conversation creation)
+    langchain_messages = []
+
+    for msg in message_for_agent:
+        if msg.role == Role.USER.value:
+            langchain_messages.append(HumanMessage(content=msg.content))
+        elif msg.role == Role.ASSISTANT.value:
+            langchain_messages.append(AIMessage(content=msg.content))
+        elif msg.role == Role.SYSTEM.value:
+            langchain_messages.append(SystemMessage(content=msg.content))
+
+    # 5. Add the latest human message to the langchain messages
+    langchain_messages.append(HumanMessage(content=latest_human_message.content))
+
+    agent = request.app.state.agent
+
+    # 6. Invoke the agent with the messages and get the assistant's response
+    assistant_response = agent.invoke({"messages": langchain_messages})
+
+    latest_assistant_message = db_create_message(Messages(
+        conversation_id=conversation_id,
+        role=Role.ASSISTANT.value,
+        content=assistant_response["messages"][-1].content
+        # Assuming the last message in the response is the assistant's reply
+    ), db)
+
+    # 7. Return both the latest human message and the assistant's response
+    return MessageTurnOut(
+        user_message=MessageOut.model_validate(latest_human_message, from_attributes=True),
+        assistant_message=MessageOut.model_validate(latest_assistant_message, from_attributes=True)
+    )

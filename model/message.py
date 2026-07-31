@@ -15,11 +15,11 @@ from sqlalchemy.orm import Mapped, mapped_column
 from model.base import Base
 
 
-class Messages(Base):
+class   Messages(Base):
     __tablename__ = "messages"
 
     __table_args__ = (
-        CheckConstraint("role IN ('user', 'assistant')", name="check_role"),
+        CheckConstraint("role IN ('user', 'assistant', 'system')", name="check_role"),
         Index("ix_messages_conversation_id_id", "conversation_id", "id"),
     )
 

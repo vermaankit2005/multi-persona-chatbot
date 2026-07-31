@@ -1,12 +1,17 @@
 from model import Conversations
 
+# List of conversation to show on left side of the UI, sorted by updated_at in descending order
+def db_get_all_conversations(user_id, db_session) -> list[Conversations]:
+    conversation = (db_session.query(Conversations)
+            .filter(Conversations.user_id == user_id).all())
+    return conversation
 
-def get_conversations(db_session, conversation_id, user_id) -> Conversations:
-    return (db_session.query(Conversations)
-            .filter(Conversations.id == conversation_id, Conversations.user_id == user_id).all())
+def db_get_conversation_by_id(conversation_id, db_session) -> Conversations:
+    conversation = db_session.query(Conversations).filter(Conversations.id == conversation_id).first()
+    return conversation
 
-
-def create_conversation(db_session, conversation: Conversations):
+# Create a new conversation for the user with the specified persona
+def db_create_conversation(conversation: Conversations, db_session) -> Conversations:
     db_session.add(conversation)
     db_session.commit()
     db_session.refresh(conversation)

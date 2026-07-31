@@ -2,20 +2,20 @@ from db import SessionLocal
 from model import Personas
 
 
-def get_persona(db_session, persona_key) -> Personas:
+def db_get_persona(persona_key, db_session) -> Personas:
     return db_session.query(Personas).filter(Personas.key == persona_key).first()
 
 
-def get_all_personas(db_session) -> list[Personas]:
+def db_get_all_personas(db_session) -> list[Personas]:
     return db_session.query(Personas).all()
 
 
-def __create_persona(db_session, persona: Personas):
+def __create_persona(persona: Personas, db_session):
     db_session.add(persona)
     db_session.commit()
 
 
-def __delete_persona(db_session, persona_key: str):
+def __delete_persona(persona_key: str, db_session):
     persona = db_session.query(Personas).filter(Personas.key == persona_key).first()
     if persona:
         db_session.delete(persona)

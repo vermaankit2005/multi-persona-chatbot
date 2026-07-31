@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Annotated
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, StringConstraints
+from pydantic import BaseModel, StringConstraints
 
 from schemas.message import MessageOut
 
@@ -37,7 +37,7 @@ class ConversationOut(BaseModel):
 class ConversationDetail(ConversationOut):
     """Response of GET /conversations/{id} — everything the thread screen needs.
 
-    `messages` is the last 50, oldest first: the order they render in.
+    all `messages`, oldest first: the order they render in.
     """
 
     messages: list[MessageOut]

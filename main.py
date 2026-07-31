@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from api import personas, messages
+from api import personas, messages, conversations
 from llm.agent import build_agent
 
 
@@ -17,6 +17,7 @@ app = FastAPI(lifespan=lifespan)
 
 app.include_router(personas.router)
 app.include_router(messages.router)
+app.include_router(conversations.router)
 
 
 @app.get("/health")
