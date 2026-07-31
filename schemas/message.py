@@ -1,9 +1,9 @@
 from datetime import datetime
 from typing import Annotated, Literal
 
-from pydantic import BaseModel, StringConstraints
+from pydantic import BaseModel, ConfigDict, StringConstraints
 
-Role = Literal["user", "assistant"]
+Role = Literal["user", "assistant", "system"]
 
 # Whitespace is stripped before the length checks run, so "   " is rejected
 # as empty rather than sneaking through as a 3-character message.
@@ -21,6 +21,10 @@ class MessageCreate(BaseModel):
 
 class MessageOut(BaseModel):
     """A single stored message."""
+
+    # Routes build this straight from ORM rows, so reading attributes off the
+    # object has to be allowed — FastAPI only does that for `response_model`.
+    model_config = ConfigDict(from_attributes=True)
 
     id: int
     role: Role
