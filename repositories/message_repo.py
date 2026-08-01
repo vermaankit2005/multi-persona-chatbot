@@ -10,13 +10,23 @@ def db_get_all_messages_for_conversation(conversation_id, db_session) -> list[Me
             .all())
 
 
-# For llm context
-def db_get_recent_messages_for_conversation(conversation_id, db_session, limit=10) -> list[Messages]:
+# For llm context. The system row is left out on purpose: it has the lowest id,
+# so a sliding window would drop the persona once the chat outgrows `limit`.
+def db_get_recent_messages_for_conversation(conversation_id, db_session, limit=20) -> list[Messages]:
     return (db_session.query(Messages)
-            .filter(Messages.conversation_id == conversation_id)
-            .order_by(Messages.id.asc())
+            .filter(Messages.conversation_id == conversation_id, Messages.role != "system")
+            .order_by(Messages.id.desc())
             .limit(limit)
-            .all())
+            .all()[::-1])  # Reverse to get oldest first
+
+
+# The persona prompt, written once when the conversation was created. Fetched
+# separately so it can be prepended to every window, however long the chat gets.
+def db_get_system_message_for_conversation(conversation_id, db_session) -> Messages | None:
+    return (db_session.query(Messages)
+            .filter(Messages.conversation_id == conversation_id, Messages.role == "system")
+            .order_by(Messages.id)
+            .first())
 
 
 # Actual chat messages are stored in the Messages table, which is linked to the Conversations table via conversation_id
