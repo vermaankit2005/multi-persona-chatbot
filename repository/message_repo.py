@@ -22,16 +22,15 @@ def db_get_recent_messages_for_conversation(conversation_id, db_session, limit=2
 
 # The persona prompt, written once when the conversation was created. Fetched
 # separately so it can be prepended to every window, however long the chat gets.
-def db_get_system_message_for_conversation(conversation_id, db_session) -> Messages | None:
+def db_get_system_message_for_conversation(conversation_id, db_session) -> Messages:
     return (db_session.query(Messages)
             .filter(Messages.conversation_id == conversation_id, Messages.role == "system")
             .order_by(Messages.id)
             .first())
 
-
-# Actual chat messages are stored in the Messages table, which is linked to the Conversations table via conversation_id
-def db_create_message(message: Messages, db_session) -> Messages:
-    db_session.add(message)
+def db_create_messages(messages: list[Messages], db_session) -> list[Messages]:
+    db_session.add_all(messages)
     db_session.commit()
-    db_session.refresh(message)
-    return message
+    for message in messages:
+        db_session.refresh(message)
+    return messages

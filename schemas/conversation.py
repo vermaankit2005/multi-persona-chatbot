@@ -6,19 +6,13 @@ from pydantic import BaseModel, StringConstraints
 
 from schemas.message import MessageOut
 
-PersonaKey = Annotated[
-    str,
-    StringConstraints(strip_whitespace=True, min_length=1, max_length=50),
-]
-
-
 class ConversationCreate(BaseModel):
     """Body of POST /conversations.
 
     A typo like "grumy_pirate" is still a valid string, so the service layer
     checks the persona exists and returns 404 if it does not.
     """
-    persona_key: PersonaKey
+    persona_key: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=50)]
 
 
 class ConversationOut(BaseModel):
