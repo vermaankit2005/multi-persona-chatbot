@@ -10,6 +10,7 @@ from repository.conversation_repo import db_get_conversation_by_id, db_update_co
 from repository.message_repo import db_get_recent_messages_for_conversation, db_get_system_message_for_conversation, \
     db_create_messages
 from schemas import TokenEvent, DoneEvent
+from schemas.message import ToolCallEvent
 
 
 def _sse(event: str, payload: BaseModel) -> str:
@@ -49,6 +50,9 @@ async def send_message_stream(user_id, agent, message_content: str, conversation
         async for delta in message.text:
             assistant_response_content += delta
             yield _sse("token", TokenEvent(text=delta))
+        for call in await message.tool_calls:
+            print(f"Tool call: {call['name']} with args: {call['args']}")
+            yield _sse("tool_call", ToolCallEvent(name=call["name"], args=call["args"]))
 
     user_row, assistant_row = save_assistant_response(
         assistant_response_content, conversation_id, db, message_content, user_id

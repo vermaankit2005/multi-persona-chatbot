@@ -53,6 +53,12 @@ class TokenEvent(BaseModel):
     text: str
 
 
+class ToolCallEvent(BaseModel):
+    """event: tool_call — a tool call that the agent is about to make."""
+    name: str
+    args: dict
+
+
 class DoneEvent(BaseModel):
     """event: done — the real database IDs, sent once the stream completes.
 
