@@ -24,11 +24,13 @@ reopened later to keep going.
 | Layer             | Choice                                        |
 |-------------------|-----------------------------------------------|
 | API               | FastAPI                                       |
-| LLM orchestration | LangGraph (prebuilt ReAct agent) + LangChain  |
+| LLM orchestration | LangChain `create_agent` on LangGraph         |
 | Model             | Groq (`openai/gpt-oss-120b`) via `langchain-groq` |
+| Tools             | Tavily web search                             |
+| Middleware        | `PIIMiddleware` — masks card numbers, emails, IPs, MACs |
 | Database          | PostgreSQL + SQLAlchemy + Alembic             |
-| Frontend          | Jinja2 + vanilla JS                           |
-| Auth              | Google OAuth, httpOnly session cookie         |
+| Frontend          | Jinja2 + vanilla JS *(not built yet)*         |
+| Auth              | Google OAuth, httpOnly session cookie *(not built yet)* |
 
 ---
 
@@ -60,11 +62,13 @@ query over serialized blobs.
 Interactive docs at `/docs`.
 
 ```
-GET    /api/v1/personas                         list available personas
-POST   /api/v1/conversations                    start a chat, lock the persona
-GET    /api/v1/conversations                    the sidebar
-GET    /api/v1/conversations/{id}               a thread + all its messages
-POST   /api/v1/conversations/{id}/messages      send a message → reply (SSE)
+GET    /health                                  liveness
+GET    /personas                                list available personas
+POST   /conversations                           start a chat, lock the persona
+GET    /conversations                           the sidebar
+GET    /conversations/{id}                      a thread + all its messages
+POST   /conversations/{id}/messages             send a message → reply (JSON)
+POST   /conversations/{id}/messages/stream      send a message → reply (SSE)
 ```
 
 ---
@@ -75,15 +79,15 @@ POST   /api/v1/conversations/{id}/messages      send a message → reply (SSE)
 git clone <repo-url> && cd multi-persona-chatbot
 uv sync
 
-cp .env.example .env        # add your GROQ_API_KEY and DATABASE_URL
+cp .env.example .env        # add your GROQ_API_KEY, POSTGRES_URL, TAVILY_API_KEY
 alembic upgrade head        # creates tables, seeds personas
 
 uvicorn main:app --reload
 ```
 
-Open http://localhost:8000 — or http://localhost:8000/docs for Swagger.
+Open http://localhost:8000/docs for Swagger. There is no web UI yet.
 
 ---
 
-> Work in progress — the layout above is the target design. See the commit
-> history for what's built so far.
+> Work in progress. Built: the API, the database, personas, SSE streaming, and a
+> web-search tool. Not built: the browser UI, login, and rate limiting.
