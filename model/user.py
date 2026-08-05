@@ -10,7 +10,12 @@ class Users(Base):
     __tablename__ = "users"
 
     __table_args__ = (
-        CheckConstraint("provider IN ('google', 'github', 'dev')", name="check_provider"),
+        # 'clerk' is the only provider real logins use — Clerk decides internally
+        # whether the person signed in with Google, GitHub or a password, and
+        # gives us one id either way. The rest are kept so old rows stay valid.
+        CheckConstraint(
+            "provider IN ('clerk', 'google', 'github', 'dev')", name="check_provider"
+        ),
         UniqueConstraint("provider", "provider_user_id", name="uq_users_provider_provider_user_id"),
     )
 

@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 
 from db import get_db_session
 from deps import get_current_user_id
+from repository.conversation_repo import db_get_conversation_by_id
 from schemas import MessageTurnOut, MessageCreate, MessageOut
 from service import chat_service, chat_service_stream
 
@@ -41,6 +42,11 @@ def send_message_stream(user_id: UUID = Depends(get_current_user_id),
                         db: Session = Depends(get_db_session)) -> StreamingResponse:
     if conversation_id is None:
         raise HTTPException(status_code=400, detail="conversation_id is required")
+
+    # api/messages.py — option A: explicit guard in the route
+    conversation = db_get_conversation_by_id(user_id, conversation_id, db)
+    if conversation is None:
+        raise HTTPException(status_code=404, detail="Conversation not found")
 
     return StreamingResponse(
         chat_service_stream.send_message_stream(user_id,

@@ -33,149 +33,158 @@
   </defs>
 
   <rect x="8" y="8" width="1184" height="844" rx="12" fill="#fbfaf7" stroke="#d9c9a3" stroke-width="3"/>
-  <text x="500" y="52" font-size="27" font-weight="700" fill="#1d1d1d" text-anchor="middle">Multi-Persona Chatbot: Target Architecture</text>
+  <text x="500" y="52" font-size="27" font-weight="700" fill="#1d1d1d" text-anchor="middle">Multi-Persona Chatbot: Current Architecture</text>
 
   <!-- legend -->
-  <rect x="944" y="26" width="228" height="66" rx="8" fill="#fff" stroke="#c9c9c9"/>
-  <path d="M962,50 L1012,50" class="flow"/>
-  <text x="1026" y="54" font-size="11" fill="#333" text-anchor="start">main flow</text>
-  <path d="M962,74 L1012,74" class="dotG"/>
-  <text x="1026" y="78" font-size="11" fill="#333" text-anchor="start">cross-cutting</text>
+  <rect x="944" y="26" width="228" height="80" rx="8" fill="#fff" stroke="#c9c9c9"/>
+  <path d="M962,46 L1012,46" class="flow"/>
+  <text x="1026" y="50" font-size="11" fill="#333" text-anchor="start">main flow</text>
+  <path d="M962,68 L1012,68" class="red"/>
+  <text x="1026" y="72" font-size="11" fill="#333" text-anchor="start">SSE stream</text>
+  <path d="M962,90 L1012,90" class="dotG"/>
+  <text x="1026" y="94" font-size="11" fill="#333" text-anchor="start">cross-cutting</text>
 
-  <!-- ================= ROW 1 ================= -->
-  <rect x="30" y="132" width="150" height="62" rx="9" fill="#cfe3cd" stroke="#7fa87c" stroke-width="2"/>
-  <text x="105" y="158" class="bl" fill="#1e3a1c">Browser</text>
-  <text x="105" y="176" class="bs" fill="#365234">Jinja2 + vanilla JS</text>
+  <!-- ================= ROW 1: entry + FastAPI ================= -->
+  <rect x="30" y="130" width="150" height="66" rx="9" fill="#cfe3cd" stroke="#7fa87c" stroke-width="2"/>
+  <text x="105" y="156" class="bl" fill="#1e3a1c">API client</text>
+  <text x="105" y="173" class="bs" fill="#365234">Swagger UI · curl</text>
+  <text x="105" y="187" class="bs" fill="#365234">no web UI yet</text>
 
   <path d="M182,163 L228,163" class="flow"/>
   <text x="205" y="154" class="el">HTTP</text>
 
-  <rect x="236" y="112" width="320" height="102" rx="12" fill="#eef0ee" stroke="#a8b0a8" stroke-width="2" stroke-dasharray="6 5"/>
-  <text x="396" y="132" class="gt">FastAPI (uvicorn)</text>
-  <rect x="248" y="142" width="145" height="56" rx="7" fill="#e9a63f" stroke="#b97d1c" stroke-width="2"/>
-  <text x="320.5" y="166" class="bl">api/v1 routes</text>
-  <text x="320.5" y="183" class="bs">thin — no SQL</text>
-  <rect x="404" y="142" width="140" height="56" rx="7" fill="#e9a63f" stroke="#b97d1c" stroke-width="2"/>
-  <text x="474" y="166" class="bl">get_current_user</text>
-  <text x="474" y="183" class="bs">deps.py</text>
+  <rect x="236" y="112" width="340" height="102" rx="12" fill="#eef0ee" stroke="#a8b0a8" stroke-width="2" stroke-dasharray="6 5"/>
+  <text x="406" y="132" class="gt">FastAPI (uvicorn) · main.py</text>
+  <rect x="248" y="142" width="165" height="56" rx="7" fill="#e9a63f" stroke="#b97d1c" stroke-width="2"/>
+  <text x="330.5" y="166" class="bl">api/ routes</text>
+  <text x="330.5" y="183" class="bs">personas · conversations</text>
+  <rect x="421" y="142" width="142" height="56" rx="7" fill="#e9a63f" stroke="#b97d1c" stroke-width="2"/>
+  <text x="492" y="166" class="bl">deps.py</text>
+  <text x="492" y="183" class="bs">get_current_user_id</text>
 
-  <path d="M558,168 L596,168" class="flow"/>
+  <path d="M578,168 L596,168" class="flow"/>
   <rect x="600" y="140" width="150" height="58" rx="8" fill="#e9a63f" stroke="#b97d1c" stroke-width="2"/>
-  <text x="675" y="164" class="bl">Pydantic schemas</text>
-  <text x="675" y="182" class="bs">validate in / out</text>
+  <text x="675" y="164" class="bl">schemas/</text>
+  <text x="675" y="182" class="bs">validate in · SSE events</text>
 
   <path d="M675,200 L675,248" class="flow"/>
-  <text x="742" y="228" class="el">MessageCreate</text>
+  <text x="690" y="228" class="el" text-anchor="start">MessageCreate</text>
 
-  <!-- ================= ROW 2: ChatService ================= -->
-  <rect x="300" y="252" width="470" height="104" rx="12" fill="#f6ecd2" stroke="#c3ac72" stroke-width="2" stroke-dasharray="6 5"/>
-  <text x="535" y="276" class="gt">ChatService  (services/)</text>
-  <rect x="314" y="288" width="145" height="52" rx="7" fill="#e9a63f" stroke="#b97d1c" stroke-width="2"/>
-  <text x="386.5" y="310" class="bl">Load history</text>
-  <text x="386.5" y="327" class="bs">last 20 messages</text>
-  <rect x="470" y="288" width="120" height="52" rx="7" fill="#e9a63f" stroke="#b97d1c" stroke-width="2"/>
-  <text x="530" y="310" class="bl">Run agent</text>
-  <text x="530" y="327" class="bs">await ainvoke</text>
-  <rect x="602" y="288" width="155" height="52" rx="7" fill="#e9a63f" stroke="#b97d1c" stroke-width="2"/>
-  <text x="679.5" y="310" class="bl">Save reply</text>
-  <text x="679.5" y="327" class="bs">+ touch updated_at</text>
+  <!-- ================= ROW 2: service/ ================= -->
+  <rect x="290" y="252" width="490" height="104" rx="12" fill="#f6ecd2" stroke="#c3ac72" stroke-width="2" stroke-dasharray="6 5"/>
+  <text x="535" y="276" class="gt">service/ — one turn of chat</text>
+  <rect x="304" y="288" width="150" height="52" rx="7" fill="#e9a63f" stroke="#b97d1c" stroke-width="2"/>
+  <text x="379" y="310" class="bl">Create chat</text>
+  <text x="379" y="327" class="bs">conversation_service.py</text>
+  <rect x="466" y="288" width="140" height="52" rx="7" fill="#e9a63f" stroke="#b97d1c" stroke-width="2"/>
+  <text x="536" y="310" class="bl">Send message</text>
+  <text x="536" y="327" class="bs">chat_service.py</text>
+  <rect x="618" y="288" width="148" height="52" rx="7" fill="#e9a63f" stroke="#b97d1c" stroke-width="2"/>
+  <text x="692" y="310" class="bl">Stream reply</text>
+  <text x="692" y="327" class="bs">chat_service_stream.py</text>
 
-  <!-- SSE back to browser -->
-  <path d="M298,322 L105,322 L105,200" class="red"/>
-  <text x="200" y="312" class="elr">SSE: token / done</text>
+  <!-- SSE back to the client -->
+  <path d="M288,322 L105,322 L105,198" class="red"/>
+  <text x="196" y="312" class="elr">SSE: token · tool_call · done</text>
 
-  <!-- ChatService -> Postgres -->
-  <path d="M772,300 L940,300" class="flow2"/>
-  <text x="856" y="291" class="el">SQL</text>
+  <!-- service -> Postgres -->
+  <path d="M782,300 L940,300" class="flow2"/>
+  <text x="861" y="291" class="el">repository/ → SQL</text>
 
-  <!-- into llm -->
-  <path d="M350,358 L350,456" class="flow"/>
-  <text x="358" y="378" class="el" text-anchor="start">rows + persona</text>
-  <!-- out of llm -->
-  <path d="M712,450 L712,360" class="flow"/>
-  <text x="722" y="378" class="el" text-anchor="start">reply</text>
-  <text x="726" y="438" class="el" text-anchor="start">yes</text>
+  <!-- service -> llm -->
+  <path d="M330,358 L330,378 L196,378 L196,448" class="flow"/>
+  <text x="263" y="370" class="el">system row + last 20</text>
+  <!-- llm -> service -->
+  <path d="M470,438 L470,358" class="flow"/>
+  <text x="480" y="374" class="el" text-anchor="start">reply</text>
 
   <!-- ================= ROW 3: llm/ ================= -->
-  <rect x="150" y="392" width="740" height="195" rx="12" fill="#f7edd4" stroke="#c8b98f" stroke-width="2" stroke-dasharray="6 5"/>
-  <text x="520" y="416" class="gt">llm/ — LangChain objects stay inside</text>
+  <rect x="150" y="392" width="740" height="212" rx="12" fill="#f7edd4" stroke="#c8b98f" stroke-width="2" stroke-dasharray="6 5"/>
+  <text x="620" y="416" class="gt">llm/ — LangChain stays inside</text>
 
-  <ellipse cx="205" cy="490" rx="38" ry="20" fill="#fff" stroke="#333" stroke-width="2"/>
-  <text x="205" y="495" font-size="12" font-weight="700" fill="#222" text-anchor="middle">START</text>
-  <path d="M245,490 L264,490" class="flow"/>
+  <ellipse cx="196" cy="470" rx="36" ry="20" fill="#fff" stroke="#333" stroke-width="2"/>
+  <text x="196" y="475" font-size="12" font-weight="700" fill="#222" text-anchor="middle">START</text>
+  <path d="M234,470 L256,470" class="flow"/>
 
-  <rect x="268" y="460" width="160" height="60" rx="8" fill="#e9a63f" stroke="#b97d1c" stroke-width="2"/>
-  <text x="348" y="484" class="bl">to_langchain()</text>
-  <text x="348" y="501" class="bs">SystemMessage(persona)</text>
-  <text x="348" y="514" class="bs">+ last 20 rows</text>
+  <rect x="260" y="440" width="152" height="62" rx="8" fill="#e9a63f" stroke="#b97d1c" stroke-width="2"/>
+  <text x="336" y="464" class="bl">to_langchain()</text>
+  <text x="336" y="481" class="bs">system row + 20 rows</text>
+  <text x="336" y="494" class="bs">conversion/conversion.py</text>
 
-  <path d="M430,490 L456,490" class="flow"/>
-  <rect x="460" y="460" width="150" height="60" rx="8" fill="#e9a63f" stroke="#b97d1c" stroke-width="2"/>
-  <text x="535" y="484" class="bl">agent.ainvoke()</text>
-  <text x="535" y="501" class="bs">ReAct agent, tools=[]</text>
-  <text x="535" y="514" class="bs">compiled once at startup</text>
+  <path d="M414,470 L438,470" class="flow"/>
+  <rect x="442" y="440" width="152" height="62" rx="8" fill="#e9a63f" stroke="#b97d1c" stroke-width="2"/>
+  <text x="518" y="464" class="bl">create_agent()</text>
+  <text x="518" y="481" class="bs">ReAct loop on LangGraph</text>
+  <text x="518" y="494" class="bs">built once in lifespan</text>
 
-  <path d="M612,490 L640,490" class="flow"/>
-  <path d="M712,450 L780,490 L712,530 L644,490 Z" fill="#f0c14b" stroke="#b8901c" stroke-width="2"/>
-  <text x="712" y="494" font-size="12.5" font-weight="700" fill="#241a08" text-anchor="middle">reply ok?</text>
+  <!-- model call -->
+  <path d="M596,470 L940,470" class="flow2"/>
+  <text x="768" y="462" class="el">prompt ⇄ reply</text>
 
-  <path d="M712,532 L712,558 L535,558 L535,524" class="red"/>
-  <text x="800" y="552" class="elr">no: retry ×1,</text>
-  <text x="800" y="566" class="elr">then 502</text>
+  <!-- tool decision -->
+  <path d="M518,504 L518,528" class="flow"/>
+  <path d="M518,530 L576,564 L518,598 L460,564 Z" fill="#f0c14b" stroke="#b8901c" stroke-width="2"/>
+  <text x="518" y="569" font-size="12.5" font-weight="700" fill="#241a08" text-anchor="middle">tool call?</text>
 
-  <path d="M892,490 L940,490" class="flow2"/>
-  <text x="916" y="480" font-size="9.5" fill="#333" text-anchor="middle">prompt ⇄ reply</text>
+  <path d="M578,564 L616,564" class="flow"/>
+  <text x="597" y="556" class="el">yes</text>
+  <rect x="620" y="540" width="150" height="48" rx="8" fill="#e9a63f" stroke="#b97d1c" stroke-width="2"/>
+  <text x="695" y="562" class="bl">TavilySearch</text>
+  <text x="695" y="579" class="bs">max_results=1 · basic</text>
+
+  <path d="M772,564 L940,564" class="flow2"/>
 
   <!-- ================= RIGHT: Postgres ================= -->
-  <rect x="944" y="160" width="186" height="200" rx="12" fill="#f0eaf6" stroke="#a98fc4" stroke-width="2" stroke-dasharray="6 5"/>
-  <text x="1037" y="184" class="gt">Postgres</text>
-  <text x="1037" y="200" class="gs">repositories/ own all SQL</text>
-  <rect x="960" y="212" width="154" height="28" rx="6" fill="#c4a6dd" stroke="#8a63b0" stroke-width="2"/>
-  <text x="1037" y="231" class="pl">users</text>
-  <rect x="960" y="246" width="154" height="28" rx="6" fill="#c4a6dd" stroke="#8a63b0" stroke-width="2"/>
-  <text x="1037" y="265" class="pl">personas</text>
-  <rect x="960" y="280" width="154" height="28" rx="6" fill="#c4a6dd" stroke="#8a63b0" stroke-width="2"/>
-  <text x="1037" y="299" class="pl">conversations</text>
-  <rect x="960" y="314" width="154" height="28" rx="6" fill="#c4a6dd" stroke="#8a63b0" stroke-width="2"/>
-  <text x="1037" y="333" class="pl">messages</text>
-  <text x="1037" y="376" class="gs">source of truth — not a LangGraph checkpointer</text>
+  <rect x="944" y="140" width="186" height="214" rx="12" fill="#f0eaf6" stroke="#a98fc4" stroke-width="2" stroke-dasharray="6 5"/>
+  <text x="1037" y="164" class="gt">Postgres</text>
+  <text x="1037" y="180" class="gs">repository/ owns all SQL</text>
+  <rect x="960" y="194" width="154" height="28" rx="6" fill="#c4a6dd" stroke="#8a63b0" stroke-width="2"/>
+  <text x="1037" y="213" class="pl">users</text>
+  <rect x="960" y="228" width="154" height="28" rx="6" fill="#c4a6dd" stroke="#8a63b0" stroke-width="2"/>
+  <text x="1037" y="247" class="pl">personas</text>
+  <rect x="960" y="262" width="154" height="28" rx="6" fill="#c4a6dd" stroke="#8a63b0" stroke-width="2"/>
+  <text x="1037" y="281" class="pl">conversations</text>
+  <rect x="960" y="296" width="154" height="28" rx="6" fill="#c4a6dd" stroke="#8a63b0" stroke-width="2"/>
+  <text x="1037" y="315" class="pl">messages</text>
+  <text x="1037" y="344" class="gs">history in plain tables — no checkpointer</text>
 
-  <!-- ================= RIGHT: Groq ================= -->
-  <rect x="944" y="420" width="186" height="136" rx="12" fill="#eef0ee" stroke="#a0a8a0" stroke-width="2" stroke-dasharray="6 5"/>
-  <text x="1037" y="446" class="gt">Groq API</text>
-  <rect x="960" y="458" width="154" height="34" rx="7" fill="#e9a63f" stroke="#b97d1c" stroke-width="2"/>
-  <text x="1037" y="479" font-size="11.5" font-weight="700" fill="#241a08" text-anchor="middle">openai/gpt-oss-120b</text>
-  <rect x="960" y="502" width="154" height="34" rx="7" fill="#e9a63f" stroke="#b97d1c" stroke-width="2"/>
-  <text x="1037" y="523" font-size="11.5" font-weight="700" fill="#241a08" text-anchor="middle">temp 0.7 · 1024 max</text>
-  <text x="1037" y="574" class="gs">streaming enabled in phase 7</text>
+  <!-- ================= RIGHT: external APIs ================= -->
+  <rect x="944" y="414" width="186" height="180" rx="12" fill="#eef0ee" stroke="#a0a8a0" stroke-width="2" stroke-dasharray="6 5"/>
+  <text x="1037" y="436" class="gt">External APIs</text>
+  <rect x="958" y="452" width="158" height="36" rx="7" fill="#e9a63f" stroke="#b97d1c" stroke-width="2"/>
+  <text x="1037" y="474" font-size="11.5" font-weight="700" fill="#241a08" text-anchor="middle">Groq · gpt-oss-120b</text>
+  <text x="1037" y="508" class="gs">temperature 0.7 · llm/provider.py</text>
+  <rect x="958" y="546" width="158" height="36" rx="7" fill="#e9a63f" stroke="#b97d1c" stroke-width="2"/>
+  <text x="1037" y="568" font-size="11.5" font-weight="700" fill="#241a08" text-anchor="middle">Tavily · web search</text>
+  <text x="1037" y="614" class="gs">keys read in config.py</text>
 
   <!-- ================= BOTTOM: cross-cutting ================= -->
-  <path d="M200,648 L200,591" class="dotB"/>
-  <path d="M590,648 L590,591" class="dotR"/>
-  <path d="M1152,648 L1152,364" class="dotG"/>
+  <path d="M200,648 L200,606" class="dotB"/>
+  <path d="M590,648 L590,606" class="dotR"/>
+  <path d="M1152,648 L1152,118 L488,118 L488,110" class="dotG"/>
 
   <rect x="30" y="650" width="340" height="140" rx="12" fill="#e3e9f7" stroke="#8095c8" stroke-width="2" stroke-dasharray="6 5"/>
-  <text x="200" y="676" class="gt">⚙ Config / Settings</text>
+  <text x="200" y="676" class="gt">⚙ Config · config.py</text>
   <rect x="46" y="690" width="308" height="38" rx="7" fill="#4d63a8" stroke="#33477f" stroke-width="2"/>
   <text x="200" y="714" class="wl">.env → Settings (Pydantic)</text>
   <rect x="46" y="738" width="308" height="38" rx="7" fill="#4d63a8" stroke="#33477f" stroke-width="2"/>
-  <text x="200" y="762" class="wl">GROQ_API_KEY · model · limits</text>
+  <text x="200" y="762" class="wl">GROQ · POSTGRES · CLERK · TAVILY</text>
 
   <rect x="400" y="650" width="380" height="140" rx="12" fill="#f7e3e3" stroke="#c89090" stroke-width="2" stroke-dasharray="6 5"/>
-  <text x="590" y="676" class="gt">🛡 Guardrails (phase 8)</text>
+  <text x="590" y="676" class="gt">🛡 Middleware · llm/agent.py</text>
   <rect x="416" y="690" width="176" height="38" rx="7" fill="#f0c9c9" stroke="#c07f7f" stroke-width="2"/>
-  <text x="504" y="714" class="rl">Rate limit 30/hr</text>
+  <text x="504" y="714" class="rl">ModelCallLimit ×5</text>
   <rect x="600" y="690" width="164" height="38" rx="7" fill="#f0c9c9" stroke="#c07f7f" stroke-width="2"/>
-  <text x="682" y="714" class="rl">60s timeout + retry</text>
+  <text x="682" y="714" class="rl">ToolCallLimit ×3</text>
   <rect x="416" y="738" width="348" height="38" rx="7" fill="#f0c9c9" stroke="#c07f7f" stroke-width="2"/>
-  <text x="590" y="762" class="rl">FakeAgent + ChatService tests</text>
+  <text x="590" y="762" class="rl">PIIMiddleware — mask card numbers</text>
 
   <rect x="810" y="650" width="360" height="140" rx="12" fill="#eeeeee" stroke="#aaaaaa" stroke-width="2" stroke-dasharray="6 5"/>
-  <text x="990" y="676" class="gt">🔐 Auth (phase 9)</text>
+  <text x="990" y="676" class="gt">🔐 Auth · Clerk (deps.py)</text>
   <rect x="826" y="690" width="328" height="38" rx="7" fill="#dcdcdc" stroke="#999" stroke-width="2"/>
-  <text x="990" y="714" class="gl">Google OAuth → upsert user</text>
+  <text x="990" y="714" class="gl">Bearer token verified locally</text>
   <rect x="826" y="738" width="328" height="38" rx="7" fill="#dcdcdc" stroke="#999" stroke-width="2"/>
-  <text x="990" y="762" class="gl">httpOnly session cookie</text>
+  <text x="990" y="762" class="gl">db_get_or_create_user → users row</text>
 
-  <text x="600" y="820" font-size="11.5" font-style="italic" fill="#777" text-anchor="middle">Built today: phases 0–2 (FastAPI · Groq agent · in-memory history). Everything else is the planned target — see docs/07-build-plan.md</text>
+  <text x="600" y="820" font-size="11.5" font-style="italic" fill="#777" text-anchor="middle">Current code. Not built: browser UI (templates/, static/), tests, per-user rate limit, LLM timeout/retry — see docs/00-status.md</text>
 </svg>

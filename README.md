@@ -27,10 +27,10 @@ reopened later to keep going.
 | LLM orchestration | LangChain `create_agent` on LangGraph         |
 | Model             | Groq (`openai/gpt-oss-120b`) via `langchain-groq` |
 | Tools             | Tavily web search                             |
-| Middleware        | `PIIMiddleware` — masks card numbers, emails, IPs, MACs |
+| Middleware        | Model/tool call limits + PII masking for card numbers |
 | Database          | PostgreSQL + SQLAlchemy + Alembic             |
 | Frontend          | Jinja2 + vanilla JS *(not built yet)*         |
-| Auth              | Google OAuth, httpOnly session cookie *(not built yet)* |
+| Auth              | Clerk — hosted sign-in, token verified per request |
 
 ---
 
@@ -71,6 +71,16 @@ POST   /conversations/{id}/messages             send a message → reply (JSON)
 POST   /conversations/{id}/messages/stream      send a message → reply (SSE)
 ```
 
+Everything under `/conversations` needs a Clerk session token:
+
+```
+Authorization: Bearer <token>
+```
+
+There are no `/auth/*` endpoints — Clerk hosts sign-in on its own domain, and
+this API only verifies the token that comes back. Swagger's **Authorize** button
+takes the same token.
+
 ---
 
 ## Getting started
@@ -79,15 +89,27 @@ POST   /conversations/{id}/messages/stream      send a message → reply (SSE)
 git clone <repo-url> && cd multi-persona-chatbot
 uv sync
 
-cp .env.example .env        # add your GROQ_API_KEY, POSTGRES_URL, TAVILY_API_KEY
+cp .env.example .env
 alembic upgrade head        # creates tables, seeds personas
 
 uvicorn main:app --reload
 ```
 
-Open http://localhost:8000/docs for Swagger. There is no web UI yet.
+Fill in `.env` before starting — the app will not boot without these:
+
+| Variable | For |
+|---|---|
+| `POSTGRES_URL` | the database |
+| `GROQ_API_KEY` | the model — https://console.groq.com/keys |
+| `TAVILY_API_KEY` | web search — https://app.tavily.com |
+| `CLERK_SECRET_KEY` | verifying session tokens — https://dashboard.clerk.com |
+| `CLERK_AUTHORIZED_PARTIES` | comma-separated origins allowed to present a token. Defaults to `http://localhost:8000`. |
+
+Open http://localhost:8000/docs for Swagger. There is no web UI yet, so you'll
+need a Clerk session token to call anything under `/conversations`.
 
 ---
 
-> Work in progress. Built: the API, the database, personas, SSE streaming, and a
-> web-search tool. Not built: the browser UI, login, and rate limiting.
+> Work in progress. Built: the API, the database, personas, SSE streaming, a
+> web-search tool, and Clerk authentication. Not built: the browser UI and
+> per-user rate limiting.

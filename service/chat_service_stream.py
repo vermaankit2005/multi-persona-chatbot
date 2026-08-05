@@ -6,11 +6,11 @@ from sqlalchemy.orm import Session
 from conversion.conversion import to_langchain
 from deps import Role
 from model import Messages
-from repository.conversation_repo import db_get_conversation_by_id, db_update_conversation_title
+from repository.conversation_repo import db_update_conversation_title
 from repository.message_repo import db_get_recent_messages_for_conversation, db_get_system_message_for_conversation, \
     db_create_messages
 from schemas import TokenEvent, DoneEvent
-from schemas.message import ToolCallEvent
+from schemas.message import ToolCallEvent, ErrorEvent
 
 
 def _sse(event: str, payload: BaseModel) -> str:
@@ -19,11 +19,6 @@ def _sse(event: str, payload: BaseModel) -> str:
 
 
 async def send_message_stream(user_id, agent, message_content: str, conversation_id, db):
-    conversation = db_get_conversation_by_id(user_id, conversation_id, db)
-
-    if conversation is None:
-        raise LookupError(f"Conversation not found for user_id: {user_id}, conversation_id: {conversation_id}")
-
     # 1. Add the latest human message to the database
     latest_human_message = Messages(
         conversation_id=conversation_id,
@@ -46,21 +41,24 @@ async def send_message_stream(user_id, agent, message_content: str, conversation
 
     assistant_response_content = ""
 
-    async for message in stream.messages:
-        async for delta in message.text:
-            assistant_response_content += delta
-            yield _sse("token", TokenEvent(text=delta))
-        for call in await message.tool_calls:
-            print(f"Tool call: {call['name']} with args: {call['args']}")
-            yield _sse("tool_call", ToolCallEvent(name=call["name"], args=call["args"]))
+    try:
+        async for message in stream.messages:
+            async for delta in message.text:
+                assistant_response_content += delta
+                yield _sse("token", TokenEvent(text=delta))
+            for call in await message.tool_calls:
+                print(f"Tool call: {call['name']} with args: {call['args']}")
+                yield _sse("tool_call", ToolCallEvent(name=call["name"], args=call["args"]))
 
-    user_row, assistant_row = save_assistant_response(
-        assistant_response_content, conversation_id, db, message_content, user_id
-    )
-    yield _sse("done", DoneEvent(
-        user_message_id=user_row.id,
-        assistant_message_id=assistant_row.id,
-    ))
+        user_row, assistant_row = save_assistant_response(
+            assistant_response_content, conversation_id, db, message_content, user_id
+        )
+        yield _sse("done", DoneEvent(
+            user_message_id=user_row.id,
+            assistant_message_id=assistant_row.id,
+        ))
+    except Exception as exc:
+        yield _sse("error", ErrorEvent(detail=str(exc)))
 
 
 def save_assistant_response(assistant_response_content,
