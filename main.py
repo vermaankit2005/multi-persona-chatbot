@@ -1,9 +1,11 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import JSONResponse
 
 from api import personas, messages, conversations
+from config import settings
 from llm.agent import build_agent
 
 
@@ -15,6 +17,19 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+
+# The frontend runs on a different origin, so the browser sends a preflight
+# OPTIONS before every call. Without this middleware that preflight 405s and
+# nothing reaches the routers below.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.CORS_ALLOWED_ORIGINS,
+    # Vercel gives each preview deployment its own subdomain.
+    allow_origin_regex=r"https://multipersonachat-.*\.vercel\.app",
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type", "Accept"],
+)
 
 app.include_router(personas.router)
 app.include_router(messages.router)
