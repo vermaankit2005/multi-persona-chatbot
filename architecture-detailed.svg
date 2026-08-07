@@ -1,0 +1,287 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1160" viewBox="0 0 1400 1160" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333"/>
+    </marker>
+    <marker id="arwR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#c0392b"/>
+    </marker>
+    <marker id="arwV" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4a7a46"/>
+    </marker>
+    <style>
+      .gt   { font-size:14.5px; font-weight:700; fill:#2f2f2f; text-anchor:start; }
+      .gsub { font-size:10px;   font-style:italic; fill:#6a6a6a; text-anchor:start; }
+      .nt   { font-size:9.5px;  font-style:italic; fill:#5a5a5a; text-anchor:start; }
+      .ntr  { font-size:10px;   font-style:italic; fill:#b03a2e; font-weight:600; text-anchor:start; }
+      .el   { font-size:10px;   fill:#444; text-anchor:middle; }
+      .els  { font-size:10px;   fill:#444; text-anchor:start; }
+      .elv  { font-size:10px;   fill:#3d6b39; font-weight:600; text-anchor:start; }
+
+      .al { font-size:12.5px; font-weight:700; fill:#241a08; text-anchor:middle; }
+      .as { font-size:9.8px;  fill:#4a3a1c; text-anchor:middle; }
+      .nl { font-size:12.5px; font-weight:700; fill:#1c2733; text-anchor:middle; }
+      .ns { font-size:9.8px;  fill:#44546a; text-anchor:middle; }
+      .sl { font-size:12.5px; font-weight:700; fill:#3a2c10; text-anchor:middle; }
+      .ss { font-size:9.8px;  fill:#5c4a20; text-anchor:middle; }
+      .vl { font-size:12.5px; font-weight:700; fill:#1e3a1c; text-anchor:middle; }
+      .vs { font-size:9.8px;  fill:#365234; text-anchor:middle; }
+      .ml { font-size:12.5px; font-weight:700; fill:#6a2020; text-anchor:middle; }
+      .ms { font-size:9.8px;  fill:#7d3535; text-anchor:middle; }
+      .pl { font-size:12.5px; font-weight:700; fill:#2b2038; text-anchor:middle; }
+      .ps { font-size:9.5px;  fill:#46375a; text-anchor:middle; }
+      .wl { font-size:12px;   font-weight:700; fill:#fff; text-anchor:middle; }
+
+      .flow  { stroke:#333; stroke-width:2.2; fill:none; marker-end:url(#arw); }
+      .flow2 { stroke:#333; stroke-width:2.2; fill:none; marker-end:url(#arw); marker-start:url(#arw); }
+      .red   { stroke:#c0392b; stroke-width:1.9; fill:none; stroke-dasharray:7 5; marker-end:url(#arwR); }
+      .dotV  { stroke:#4a7a46; stroke-width:1.9; fill:none; stroke-dasharray:2 4; marker-end:url(#arwV); }
+      .brace { stroke:#c07f7f; stroke-width:2; fill:none; }
+    </style>
+  </defs>
+
+  <rect x="8" y="8" width="1384" height="1144" rx="12" fill="#fbfaf7" stroke="#d9c9a3" stroke-width="3"/>
+
+  <text x="32" y="52" font-size="27" font-weight="700" fill="#1d1d1d" text-anchor="start">Multi-Persona Chatbot</text>
+  <text x="32" y="78" font-size="12.5" font-style="italic" fill="#666" text-anchor="start">FastAPI · LangChain ReAct agent · PostgreSQL · SSE streaming · DeepEval component evals</text>
+
+  <!-- ================= LEGEND ================= -->
+  <rect x="1080" y="24" width="292" height="110" rx="8" fill="#fff" stroke="#c9c9c9"/>
+  <path d="M1096,48 L1146,48" class="flow"/>
+  <text x="1158" y="52" font-size="10.5" fill="#333" text-anchor="start">request path</text>
+  <path d="M1096,70 L1146,70" class="red"/>
+  <text x="1158" y="74" font-size="10.5" fill="#333" text-anchor="start">streamed to the client</text>
+  <path d="M1096,92 L1146,92" class="flow2"/>
+  <text x="1158" y="96" font-size="10.5" fill="#333" text-anchor="start">read ⇄ write</text>
+  <path d="M1096,114 L1146,114" class="dotV"/>
+  <text x="1158" y="118" font-size="10.5" fill="#333" text-anchor="start">eval entry point</text>
+
+  <!-- ================= CLIENT ================= -->
+  <rect x="30" y="150" width="150" height="80" rx="9" fill="#cfe3cd" stroke="#7fa87c" stroke-width="2"/>
+  <text x="105" y="178" class="vl">React SPA</text>
+  <text x="105" y="196" class="vs">TypeScript · Vite</text>
+  <text x="105" y="212" class="vs">separate repo</text>
+
+  <path d="M182,190 L216,190" class="flow"/>
+  <text x="199" y="181" font-size="9" fill="#444" text-anchor="middle">HTTPS</text>
+
+  <!-- ================= 1. API LAYER ================= -->
+  <rect x="220" y="112" width="840" height="140" rx="12" fill="#eef1f4" stroke="#9fadbd" stroke-width="2" stroke-dasharray="6 5"/>
+  <text x="236" y="134" class="gt">① API Layer · FastAPI</text>
+
+  <rect x="234" y="150" width="193" height="80" rx="7" fill="#dde3ea" stroke="#93a3b5" stroke-width="2"/>
+  <text x="330" y="178" class="nl">CORS</text>
+  <text x="330" y="196" class="ns">explicit origin list</text>
+  <text x="330" y="212" class="ns">no wildcard matching</text>
+
+  <rect x="441" y="150" width="193" height="80" rx="7" fill="#dde3ea" stroke="#93a3b5" stroke-width="2"/>
+  <text x="537" y="178" class="nl">Clerk JWT → user_id</text>
+  <text x="537" y="196" class="ns">signing keys cached</text>
+  <text x="537" y="212" class="ns">identity never from body</text>
+
+  <rect x="648" y="150" width="193" height="80" rx="7" fill="#dde3ea" stroke="#93a3b5" stroke-width="2"/>
+  <text x="744" y="178" class="nl">Pydantic v2 schemas</text>
+  <text x="744" y="196" class="ns">strip · 1–4000 chars</text>
+  <text x="744" y="212" class="ns">typed request + response</text>
+
+  <rect x="855" y="150" width="193" height="80" rx="7" fill="#dde3ea" stroke="#93a3b5" stroke-width="2"/>
+  <text x="951" y="178" class="nl">3 routers</text>
+  <text x="951" y="196" class="ns">personas · conversations</text>
+  <text x="951" y="212" class="ns">messages · /health</text>
+
+  <path d="M640,254 L640,276" class="flow"/>
+  <text x="652" y="272" class="els">user_id from the token + validated body</text>
+
+  <!-- ================= 2. SERVICE LAYER ================= -->
+  <rect x="220" y="280" width="840" height="160" rx="12" fill="#faf3e4" stroke="#c3ac72" stroke-width="2" stroke-dasharray="6 5"/>
+  <text x="236" y="302" class="gt">② Service Layer — one turn, one transaction</text>
+
+  <rect x="234" y="316" width="265" height="76" rx="7" fill="#f2dfb8" stroke="#c9a95f" stroke-width="2"/>
+  <text x="366" y="340" class="sl">create_conversation()</text>
+  <text x="366" y="357" class="ss">persona row → system message row</text>
+  <text x="366" y="372" class="ss">persona locked to the thread</text>
+
+  <rect x="512" y="316" width="265" height="76" rx="7" fill="#f2dfb8" stroke="#c9a95f" stroke-width="2"/>
+  <text x="644" y="340" class="sl">send_message()</text>
+  <text x="644" y="357" class="ss">blocking · one JSON turn</text>
+  <text x="644" y="372" class="ss">service/chat_service.py</text>
+
+  <rect x="790" y="316" width="265" height="76" rx="7" fill="#f2dfb8" stroke="#c9a95f" stroke-width="2"/>
+  <text x="922" y="340" class="sl">send_message_stream()</text>
+  <text x="922" y="357" class="ss">async generator → SSE</text>
+  <text x="922" y="372" class="ss">service/chat_service_stream.py</text>
+
+  <text x="236" y="410" class="nt">SSE contract:  event: token · tool_call · done (real row ids) · error</text>
+  <text x="236" y="426" class="nt">error is an event, not a status — the code is locked once the first byte ships, so ownership is checked before the stream opens</text>
+
+  <!-- streamed response back to the client -->
+  <path d="M218,352 L105,352 L105,232" class="red"/>
+  <text x="162" y="344" class="el" fill="#c0392b">SSE stream</text>
+
+  <path d="M640,442 L640,458" class="flow"/>
+  <text x="652" y="455" class="els">history rows</text>
+
+  <!-- ================= 3. CONTEXT ASSEMBLY ================= -->
+  <rect x="220" y="460" width="840" height="160" rx="12" fill="#faf3e4" stroke="#c3ac72" stroke-width="2" stroke-dasharray="6 5"/>
+  <text x="236" y="482" class="gt">③ Context Assembly — two queries, on purpose</text>
+
+  <rect x="236" y="498" width="214" height="48" rx="7" fill="#f2dfb8" stroke="#c9a95f" stroke-width="2"/>
+  <text x="343" y="520" class="sl">system row</text>
+  <text x="343" y="536" class="ss">role = 'system' · fetched alone</text>
+
+  <rect x="236" y="556" width="214" height="48" rx="7" fill="#f2dfb8" stroke="#c9a95f" stroke-width="2"/>
+  <text x="343" y="578" class="sl">last 20 turns</text>
+  <text x="343" y="594" class="ss">role != 'system' · id DESC · reversed</text>
+
+  <path d="M452,522 L492,534" class="flow"/>
+  <path d="M452,580 L492,566" class="flow"/>
+
+  <rect x="496" y="512" width="250" height="76" rx="7" fill="#f5d99a" stroke="#c9a35a" stroke-width="2"/>
+  <text x="621" y="536" class="sl">[ system ] + window + new</text>
+  <text x="621" y="553" class="ss">persona re-pinned every turn</text>
+  <text x="621" y="568" class="ss">prompt rebuilt per request</text>
+
+  <path d="M748,550 L790,550" class="flow"/>
+
+  <rect x="794" y="512" width="250" height="76" rx="7" fill="#f2dfb8" stroke="#c9a95f" stroke-width="2"/>
+  <text x="919" y="536" class="sl">to_langchain()</text>
+  <text x="919" y="553" class="ss">rows → System / Human / AI</text>
+  <text x="919" y="568" class="ss">conversion/conversion.py</text>
+
+  <text x="236" y="614" class="ntr">One sliding window over all rows would evict the persona first — it has the lowest id. Hence two queries.</text>
+
+  <path d="M640,622 L640,638" class="flow"/>
+  <text x="652" y="635" class="els">LangChain messages</text>
+
+  <!-- ================= 4. AGENT RUNTIME ================= -->
+  <rect x="220" y="640" width="840" height="270" rx="12" fill="#f7edd4" stroke="#c8b98f" stroke-width="2" stroke-dasharray="6 5"/>
+  <text x="236" y="662" class="gt">④ Agent Runtime · LangChain create_agent()</text>
+  <text x="236" y="678" class="gsub">built once in the lifespan hook and stored on app.state.agent — not rebuilt per request</text>
+
+  <text x="236" y="700" class="nt">middleware, applied in order</text>
+
+  <rect x="236" y="708" width="250" height="50" rx="7" fill="#f0c9c9" stroke="#c07f7f" stroke-width="2"/>
+  <text x="361" y="730" class="ml">ModelCallLimitMiddleware</text>
+  <text x="361" y="746" class="ms">run_limit=5 · exit=end</text>
+
+  <rect x="236" y="766" width="250" height="50" rx="7" fill="#f0c9c9" stroke="#c07f7f" stroke-width="2"/>
+  <text x="361" y="788" class="ml">ToolCallLimitMiddleware</text>
+  <text x="361" y="804" class="ms">run_limit=3 · exit=continue</text>
+
+  <rect x="236" y="824" width="250" height="50" rx="7" fill="#f0c9c9" stroke="#c07f7f" stroke-width="2"/>
+  <text x="361" y="846" class="ml">PIIMiddleware · credit_card</text>
+  <text x="361" y="862" class="ms">mask · output + tool results</text>
+
+  <path d="M496,733 L496,849" class="brace"/>
+  <path d="M496,744 L528,744" class="flow"/>
+
+  <rect x="530" y="706" width="230" height="76" rx="8" fill="#e9a63f" stroke="#b97d1c" stroke-width="2"/>
+  <text x="645" y="730" class="al">ReAct loop</text>
+  <text x="645" y="747" class="as">reason → act → observe</text>
+  <text x="645" y="762" class="as">LangGraph runtime</text>
+
+  <path d="M645,784 L645,814" class="flow"/>
+  <path d="M645,818 L700,850 L645,882 L590,850 Z" fill="#f0c14b" stroke="#b8901c" stroke-width="2"/>
+  <text x="645" y="854" font-size="11.5" font-weight="700" fill="#241a08" text-anchor="middle">tool call?</text>
+
+  <path d="M702,850 L796,850" class="flow2"/>
+  <text x="749" y="842" class="el">yes → result</text>
+
+  <rect x="800" y="816" width="244" height="68" rx="8" fill="#e9a63f" stroke="#b97d1c" stroke-width="2"/>
+  <text x="922" y="842" class="al">TavilySearch</text>
+  <text x="922" y="860" class="as">max_results=1 · search_depth=basic</text>
+
+  <!-- inference link -->
+  <path d="M762,744 L1078,744" class="flow2"/>
+  <text x="905" y="736" class="el">prompt ⇄ completion</text>
+
+  <!-- tool link -->
+  <path d="M1046,850 L1078,850" class="flow2"/>
+
+  <!-- completion returns to the service layer -->
+  <path d="M645,884 L645,890 L120,890 L120,430 L216,430" class="flow"/>
+  <text x="658" y="880" class="els">no</text>
+  <text x="126" y="424" class="els">completion</text>
+
+  <!-- ================= RIGHT: POSTGRES ================= -->
+  <rect x="1080" y="150" width="292" height="470" rx="12" fill="#f0eaf6" stroke="#a98fc4" stroke-width="2" stroke-dasharray="6 5"/>
+  <text x="1096" y="174" class="gt">PostgreSQL</text>
+  <text x="1096" y="190" class="gsub">system of record</text>
+
+  <rect x="1096" y="204" width="260" height="52" rx="6" fill="#c4a6dd" stroke="#8a63b0" stroke-width="2"/>
+  <text x="1226" y="226" class="pl">users</text>
+  <text x="1226" y="242" class="ps">UNIQUE (provider, provider_user_id)</text>
+
+  <rect x="1096" y="264" width="260" height="52" rx="6" fill="#c4a6dd" stroke="#8a63b0" stroke-width="2"/>
+  <text x="1226" y="286" class="pl">personas</text>
+  <text x="1226" y="302" class="ps">key PK · name · system_prompt</text>
+
+  <rect x="1096" y="324" width="260" height="52" rx="6" fill="#c4a6dd" stroke="#8a63b0" stroke-width="2"/>
+  <text x="1226" y="346" class="pl">conversations</text>
+  <text x="1226" y="362" class="ps">IX (user_id, updated_at DESC)</text>
+
+  <rect x="1096" y="384" width="260" height="52" rx="6" fill="#c4a6dd" stroke="#8a63b0" stroke-width="2"/>
+  <text x="1226" y="406" class="pl">messages</text>
+  <text x="1226" y="422" class="ps">IX (conversation_id, id) · CHECK role</text>
+
+  <text x="1096" y="460" class="nt">every query filters by user_id —</text>
+  <text x="1096" y="474" class="nt">ownership lives in the WHERE clause</text>
+  <text x="1096" y="498" class="nt">FK cascade: users → conversations → messages</text>
+  <text x="1096" y="522" class="nt">no LangGraph checkpointer — plain relational history</text>
+  <text x="1096" y="546" class="nt">Alembic · 4 versioned migrations</text>
+  <text x="1096" y="570" class="nt">get-or-create user survives the insert race</text>
+  <text x="1096" y="584" class="nt">(IntegrityError → rollback → re-read the winner)</text>
+
+  <!-- service layer ⇄ postgres -->
+  <path d="M1062,356 L1078,356" class="flow2"/>
+
+  <!-- ================= RIGHT: EXTERNAL ================= -->
+  <rect x="1080" y="640" width="292" height="270" rx="12" fill="#eef0ee" stroke="#a0a8a0" stroke-width="2" stroke-dasharray="6 5"/>
+  <text x="1096" y="664" class="gt">External Services</text>
+
+  <rect x="1096" y="690" width="260" height="76" rx="7" fill="#f5d99a" stroke="#c9a35a" stroke-width="2"/>
+  <text x="1226" y="714" class="sl">Groq</text>
+  <text x="1226" y="731" class="ss">openai/gpt-oss-120b</text>
+  <text x="1226" y="747" class="ss">temperature 0.7</text>
+
+  <rect x="1096" y="800" width="260" height="62" rx="7" fill="#f5d99a" stroke="#c9a35a" stroke-width="2"/>
+  <text x="1226" y="824" class="sl">Tavily Search</text>
+  <text x="1226" y="841" class="ss">web search API</text>
+
+  <text x="1096" y="884" class="nt">called only when the agent decides to</text>
+
+  <!-- ================= 5. EVALS ================= -->
+  <path d="M60,928 L60,400 L216,400" class="dotV"/>
+  <text x="68" y="700" class="elv">evals call the service directly</text>
+  <text x="196" y="924" class="elv">component evals enter below the transport — no HTTP, no auth, no mocks</text>
+
+  <rect x="30" y="930" width="940" height="150" rx="12" fill="#e8f1e6" stroke="#7fa87c" stroke-width="2" stroke-dasharray="6 5"/>
+  <text x="46" y="954" class="gt">⑤ Component Evals · DeepEval + pytest</text>
+  <text x="46" y="971" class="gsub">entered at service.chat_service.send_message() — real agent, real Postgres, real Groq call</text>
+
+  <rect x="46" y="984" width="296" height="52" rx="7" fill="#cfe3cd" stroke="#7fa87c" stroke-width="2"/>
+  <text x="194" y="1006" class="vl">ToolCorrectnessMetric</text>
+  <text x="194" y="1022" class="vs">3 prompts must reach tavily_search</text>
+
+  <rect x="354" y="984" width="296" height="52" rx="7" fill="#cfe3cd" stroke="#7fa87c" stroke-width="2"/>
+  <text x="502" y="1006" class="vl">GEval · persona drift</text>
+  <text x="502" y="1022" class="vs">single turn · LLM judge · threshold 0.7</text>
+
+  <rect x="662" y="984" width="296" height="52" rx="7" fill="#cfe3cd" stroke="#7fa87c" stroke-width="2"/>
+  <text x="810" y="1006" class="vl">ConversationalGEval</text>
+  <text x="810" y="1022" class="vs">3-turn drop-the-persona probe</text>
+
+  <text x="46" y="1058" class="nt">judge model: gpt-oss-120b via Groq — a second model grades the first, so persona drift fails the build instead of the demo</text>
+
+  <!-- ================= RUNTIME / CONFIG ================= -->
+  <rect x="990" y="930" width="382" height="150" rx="12" fill="#e3e9f7" stroke="#8095c8" stroke-width="2" stroke-dasharray="6 5"/>
+  <text x="1006" y="954" class="gt">⚙ Runtime &amp; Config</text>
+
+  <rect x="1006" y="968" width="350" height="44" rx="7" fill="#4d63a8" stroke="#33477f" stroke-width="2"/>
+  <text x="1181" y="995" class="wl">agent built once at boot → app.state</text>
+
+  <rect x="1006" y="1020" width="350" height="44" rx="7" fill="#4d63a8" stroke="#33477f" stroke-width="2"/>
+  <text x="1181" y="1047" class="wl">Settings validated from .env at import</text>
+
+  <text x="32" y="1120" font-size="11.5" font-style="italic" fill="#777" text-anchor="start">Drawn from the committed code at HEAD. Not implemented: per-user rate limiting, LLM timeout / retry, and a conversation-level tool budget.</text>
+</svg>
