@@ -30,3 +30,10 @@ def db_update_conversation_title(user_id, title: str, conversation_id, db_sessio
     db_session.commit()
     db_session.refresh(conversation)
     return conversation
+
+def db_delete_conversation(user_id, conversation_id, db_session) -> Conversations:
+    conversation = db_get_conversation_by_id(user_id, conversation_id, db_session)
+    if conversation:
+        db_session.delete(conversation)
+        db_session.commit()
+    return conversation

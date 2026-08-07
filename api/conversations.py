@@ -1,12 +1,14 @@
 from uuid import UUID
 
 from fastapi import Depends, APIRouter
+from fastapi.params import Path
 from sqlalchemy.orm import Session
 
 from db import get_db_session
 from deps import get_current_user_id
 from repository.conversation_repo import db_get_all_conversations
 from schemas import ConversationOut, ConversationCreate, ConversationDetail
+from schemas.conversation import ConversationDelete
 from service import conversation_service
 
 router = APIRouter(tags=["conversations"])
@@ -14,7 +16,8 @@ router = APIRouter(tags=["conversations"])
 
 @router.get("/conversations", response_model=list[ConversationOut],
             summary="Get all conversations for the current user")
-def get_conversations(user_id: UUID = Depends(get_current_user_id), db: Session = Depends(get_db_session)) -> list[ConversationOut]:
+def get_conversations(user_id: UUID = Depends(get_current_user_id), db: Session = Depends(get_db_session)) -> list[
+    ConversationOut]:
     return db_get_all_conversations(user_id=user_id, db_session=db)
 
 
@@ -40,3 +43,13 @@ def get_messages_for_conversation(user_id: UUID = Depends(get_current_user_id),
         updated_at=conversation.updated_at,
         messages=messages
     )
+
+
+@router.delete("/conversations/{conversation_id}", response_model=ConversationDelete,
+               summary="Delete a conversation and all its messages")
+def delete_conversation(user_id: UUID = Depends(get_current_user_id),
+                        db: Session = Depends(get_db_session),
+                        conversation_id: UUID = Path(...,
+                                                     description="The ID of the conversation to delete")) -> ConversationDelete:
+    conversation_service.delete_conversation(user_id, conversation_id, db)
+    return ConversationDelete(id=conversation_id)

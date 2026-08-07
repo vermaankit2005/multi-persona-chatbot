@@ -35,3 +35,7 @@ class ConversationDetail(ConversationOut):
     """
 
     messages: list[MessageOut]
+
+class ConversationDelete(BaseModel):
+    """Response of DELETE /conversations/{id} — confirmation of deletion."""
+    id: UUID
