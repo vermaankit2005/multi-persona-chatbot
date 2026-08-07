@@ -34,6 +34,7 @@ def eval_user(eval_db_session) -> Users:
 
 
 # Create conversation for dummy user
+@pytest.fixture(scope="function")
 def eval_create_dummy_conversation(eval_db_session, persona_key, eval_user) -> Conversations:
     print("Creating dummy conversation for testing...")
     conversation = create_conversation(eval_user.id, persona_key, eval_db_session)

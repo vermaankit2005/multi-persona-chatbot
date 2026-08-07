@@ -18,3 +18,8 @@ dependencies = [
     "sqlalchemy>=2.0.51",
     "uvicorn>=0.51.0",
 ]
+
+[dependency-groups]
+dev = [
+    "portalocker[win32]>=4.1.0 ; sys_platform == 'win32'",
+]
