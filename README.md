@@ -36,7 +36,7 @@ reopened later to keep going.
 
 ## Target Design
 
-![architecture.svg](architecture.svg)
+![architecture-detailed.svg](architecture-detailed.svg)
 
 Strict layering: routes contain no SQL and no prompt building, repositories know
 nothing about HTTP, and LangChain objects never leave `llm/`.

@@ -12,6 +12,13 @@
     <style>
       .gt   { font-size:14.5px; font-weight:700; fill:#2f2f2f; text-anchor:start; }
       .gsub { font-size:10px;   font-style:italic; fill:#6a6a6a; text-anchor:start; }
+
+      /* marketing headings: loud, uppercase, letter-spaced */
+      .h1   { font-size:15px;   font-weight:800; letter-spacing:1.4px; text-anchor:start; }
+      .h2   { font-size:12.5px; font-weight:800; letter-spacing:1.2px; text-anchor:start; }
+      .h3   { font-size:10.5px; font-weight:800; letter-spacing:1px;   text-anchor:middle; }
+      .hq   { font-size:10.5px; font-weight:400; font-style:italic; letter-spacing:0; fill:#6a6a6a; }
+      .bdg  { font-size:11.5px; font-weight:800; letter-spacing:0; fill:#fff; text-anchor:middle; }
       .nt   { font-size:9.5px;  font-style:italic; fill:#5a5a5a; text-anchor:start; }
       .ntr  { font-size:10px;   font-style:italic; fill:#b03a2e; font-weight:600; text-anchor:start; }
       .el   { font-size:10px;   fill:#444; text-anchor:middle; }
@@ -57,6 +64,7 @@
   <text x="1158" y="118" font-size="10.5" fill="#333" text-anchor="start">eval entry point</text>
 
   <!-- ================= CLIENT ================= -->
+  <text x="105" y="142" class="h3" fill="#2f5c2b">WEB CLIENT</text>
   <rect x="30" y="150" width="150" height="80" rx="9" fill="#cfe3cd" stroke="#7fa87c" stroke-width="2"/>
   <text x="105" y="178" class="vl">React SPA</text>
   <text x="105" y="196" class="vs">TypeScript · Vite</text>
@@ -67,7 +75,9 @@
 
   <!-- ================= 1. API LAYER ================= -->
   <rect x="220" y="112" width="840" height="140" rx="12" fill="#eef1f4" stroke="#9fadbd" stroke-width="2" stroke-dasharray="6 5"/>
-  <text x="236" y="134" class="gt">① API Layer · FastAPI</text>
+  <circle cx="248" cy="129" r="11" fill="#6b7f95"/>
+  <text x="248" y="133" class="bdg">1</text>
+  <text x="266" y="134" class="h1" fill="#33506b">API LAYER<tspan class="hq">  ·  FastAPI · CORS · Clerk JWT · Pydantic</tspan></text>
 
   <rect x="234" y="150" width="193" height="80" rx="7" fill="#dde3ea" stroke="#93a3b5" stroke-width="2"/>
   <text x="330" y="178" class="nl">CORS</text>
@@ -94,7 +104,9 @@
 
   <!-- ================= 2. SERVICE LAYER ================= -->
   <rect x="220" y="280" width="840" height="160" rx="12" fill="#faf3e4" stroke="#c3ac72" stroke-width="2" stroke-dasharray="6 5"/>
-  <text x="236" y="302" class="gt">② Service Layer — one turn, one transaction</text>
+  <circle cx="248" cy="297" r="11" fill="#a8823a"/>
+  <text x="248" y="301" class="bdg">2</text>
+  <text x="266" y="302" class="h1" fill="#7a5a1c">SERVICE LAYER<tspan class="hq">  ·  one turn, one transaction</tspan></text>
 
   <rect x="234" y="316" width="265" height="76" rx="7" fill="#f2dfb8" stroke="#c9a95f" stroke-width="2"/>
   <text x="366" y="340" class="sl">create_conversation()</text>
@@ -123,7 +135,9 @@
 
   <!-- ================= 3. CONTEXT ASSEMBLY ================= -->
   <rect x="220" y="460" width="840" height="160" rx="12" fill="#faf3e4" stroke="#c3ac72" stroke-width="2" stroke-dasharray="6 5"/>
-  <text x="236" y="482" class="gt">③ Context Assembly — two queries, on purpose</text>
+  <circle cx="248" cy="477" r="11" fill="#a8823a"/>
+  <text x="248" y="481" class="bdg">3</text>
+  <text x="266" y="482" class="h1" fill="#7a5a1c">CONTEXT ENGINEERING<tspan class="hq">  ·  two queries, on purpose</tspan></text>
 
   <rect x="236" y="498" width="214" height="48" rx="7" fill="#f2dfb8" stroke="#c9a95f" stroke-width="2"/>
   <text x="343" y="520" class="sl">system row</text>
@@ -155,24 +169,26 @@
 
   <!-- ================= 4. AGENT RUNTIME ================= -->
   <rect x="220" y="640" width="840" height="270" rx="12" fill="#f7edd4" stroke="#c8b98f" stroke-width="2" stroke-dasharray="6 5"/>
-  <text x="236" y="662" class="gt">④ Agent Runtime · LangChain create_agent()</text>
-  <text x="236" y="678" class="gsub">built once in the lifespan hook and stored on app.state.agent — not rebuilt per request</text>
+  <circle cx="248" cy="657" r="11" fill="#b97d1c"/>
+  <text x="248" y="661" class="bdg">4</text>
+  <text x="266" y="662" class="h1" fill="#8a5a10">REACT AGENT<tspan class="hq">  ·  LangChain create_agent()</tspan></text>
+  <text x="266" y="678" class="gsub">built once in the lifespan hook and stored on app.state.agent — not rebuilt per request</text>
 
-  <text x="236" y="700" class="nt">middleware, applied in order</text>
+  <text x="236" y="704" class="h2" fill="#a03030">GUARDRAILS<tspan class="hq">  ·  middleware, applied in order</tspan></text>
 
-  <rect x="236" y="708" width="250" height="50" rx="7" fill="#f0c9c9" stroke="#c07f7f" stroke-width="2"/>
-  <text x="361" y="730" class="ml">ModelCallLimitMiddleware</text>
-  <text x="361" y="746" class="ms">run_limit=5 · exit=end</text>
+  <rect x="236" y="714" width="250" height="50" rx="7" fill="#f0c9c9" stroke="#c07f7f" stroke-width="2"/>
+  <text x="361" y="736" class="ml">ModelCallLimitMiddleware</text>
+  <text x="361" y="752" class="ms">run_limit=5 · exit=end</text>
 
-  <rect x="236" y="766" width="250" height="50" rx="7" fill="#f0c9c9" stroke="#c07f7f" stroke-width="2"/>
-  <text x="361" y="788" class="ml">ToolCallLimitMiddleware</text>
-  <text x="361" y="804" class="ms">run_limit=3 · exit=continue</text>
+  <rect x="236" y="772" width="250" height="50" rx="7" fill="#f0c9c9" stroke="#c07f7f" stroke-width="2"/>
+  <text x="361" y="794" class="ml">ToolCallLimitMiddleware</text>
+  <text x="361" y="810" class="ms">run_limit=3 · exit=continue</text>
 
-  <rect x="236" y="824" width="250" height="50" rx="7" fill="#f0c9c9" stroke="#c07f7f" stroke-width="2"/>
-  <text x="361" y="846" class="ml">PIIMiddleware · credit_card</text>
-  <text x="361" y="862" class="ms">mask · output + tool results</text>
+  <rect x="236" y="830" width="250" height="50" rx="7" fill="#f0c9c9" stroke="#c07f7f" stroke-width="2"/>
+  <text x="361" y="852" class="ml">PIIMiddleware · credit_card</text>
+  <text x="361" y="868" class="ms">mask · output + tool results</text>
 
-  <path d="M496,733 L496,849" class="brace"/>
+  <path d="M496,739 L496,855" class="brace"/>
   <path d="M496,744 L528,744" class="flow"/>
 
   <rect x="530" y="706" width="230" height="76" rx="8" fill="#e9a63f" stroke="#b97d1c" stroke-width="2"/>
@@ -205,8 +221,9 @@
 
   <!-- ================= RIGHT: POSTGRES ================= -->
   <rect x="1080" y="150" width="292" height="470" rx="12" fill="#f0eaf6" stroke="#a98fc4" stroke-width="2" stroke-dasharray="6 5"/>
-  <text x="1096" y="174" class="gt">PostgreSQL</text>
-  <text x="1096" y="190" class="gsub">system of record</text>
+  <rect x="1096" y="163" width="4" height="16" rx="2" fill="#8a63b0"/>
+  <text x="1108" y="176" class="h1" fill="#5a3d80">PERSISTENCE</text>
+  <text x="1096" y="192" class="gsub">PostgreSQL — system of record</text>
 
   <rect x="1096" y="204" width="260" height="52" rx="6" fill="#c4a6dd" stroke="#8a63b0" stroke-width="2"/>
   <text x="1226" y="226" class="pl">users</text>
@@ -237,7 +254,8 @@
 
   <!-- ================= RIGHT: EXTERNAL ================= -->
   <rect x="1080" y="640" width="292" height="270" rx="12" fill="#eef0ee" stroke="#a0a8a0" stroke-width="2" stroke-dasharray="6 5"/>
-  <text x="1096" y="664" class="gt">External Services</text>
+  <rect x="1096" y="651" width="4" height="16" rx="2" fill="#c9a35a"/>
+  <text x="1108" y="664" class="h1" fill="#6b5a30">EXTERNAL SERVICES</text>
 
   <rect x="1096" y="690" width="260" height="76" rx="7" fill="#f5d99a" stroke="#c9a35a" stroke-width="2"/>
   <text x="1226" y="714" class="sl">Groq</text>
@@ -256,8 +274,10 @@
   <text x="196" y="924" class="elv">component evals enter below the transport — no HTTP, no auth, no mocks</text>
 
   <rect x="30" y="930" width="940" height="150" rx="12" fill="#e8f1e6" stroke="#7fa87c" stroke-width="2" stroke-dasharray="6 5"/>
-  <text x="46" y="954" class="gt">⑤ Component Evals · DeepEval + pytest</text>
-  <text x="46" y="971" class="gsub">entered at service.chat_service.send_message() — real agent, real Postgres, real Groq call</text>
+  <circle cx="58" cy="949" r="11" fill="#5e8f58"/>
+  <text x="58" y="953" class="bdg">5</text>
+  <text x="76" y="954" class="h1" fill="#2f5c2b">LLM EVALS<tspan class="hq">  ·  component level · DeepEval + pytest</tspan></text>
+  <text x="76" y="971" class="gsub">entered at service.chat_service.send_message() — real agent, real Postgres, real Groq call</text>
 
   <rect x="46" y="984" width="296" height="52" rx="7" fill="#cfe3cd" stroke="#7fa87c" stroke-width="2"/>
   <text x="194" y="1006" class="vl">ToolCorrectnessMetric</text>
@@ -275,7 +295,8 @@
 
   <!-- ================= RUNTIME / CONFIG ================= -->
   <rect x="990" y="930" width="382" height="150" rx="12" fill="#e3e9f7" stroke="#8095c8" stroke-width="2" stroke-dasharray="6 5"/>
-  <text x="1006" y="954" class="gt">⚙ Runtime &amp; Config</text>
+  <rect x="1006" y="941" width="4" height="16" rx="2" fill="#4d63a8"/>
+  <text x="1018" y="954" class="h1" fill="#33477f">RUNTIME &amp; CONFIG</text>
 
   <rect x="1006" y="968" width="350" height="44" rx="7" fill="#4d63a8" stroke="#33477f" stroke-width="2"/>
   <text x="1181" y="995" class="wl">agent built once at boot → app.state</text>
