@@ -6,7 +6,7 @@ from repository.message_repo import db_get_recent_messages_for_conversation, db_
     db_create_messages
 
 
-def send_message(user_id, agent, message_content: str, conversation_id, db) -> tuple[Messages, Messages]:
+def send_message(user_id, agent, message_content: str, conversation_id, db) -> tuple[Messages, Messages, Messages]:
     conversation = db_get_conversation_by_id(user_id, conversation_id, db)
     if conversation is None:
         raise LookupError(f"Conversation not found for user_id: {user_id}, conversation_id: {conversation_id}")
@@ -29,7 +29,11 @@ def send_message(user_id, agent, message_content: str, conversation_id, db) -> t
     langchain_messages = to_langchain(message_for_agent)
 
     # 6. Invoke the agent with the messages and get the assistant's response
-    assistant_response = agent.invoke({"messages": langchain_messages}, streaming=True)
+    assistant_response = agent.invoke({"messages": langchain_messages})
+
+    tools_called = [
+        m.name for m in assistant_response["messages"] if m.type == "tool"
+    ]
 
     latest_assistant_message = Messages(
         conversation_id=conversation_id,
@@ -43,7 +47,7 @@ def send_message(user_id, agent, message_content: str, conversation_id, db) -> t
     # 7. Update the conversation title and updated_at based on the latest human message
     touch_conversation(user_id, conversation_id, message_content, db)
 
-    return latest_human_message, latest_assistant_message
+    return latest_human_message, latest_assistant_message, tools_called
 
 
 def touch_conversation(user_id, conversation_id, message_content: str, db):

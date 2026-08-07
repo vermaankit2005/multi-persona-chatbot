@@ -24,7 +24,7 @@ def send_message(user_id: UUID = Depends(get_current_user_id),
     if conversation_id is None:
         raise HTTPException(status_code=400, detail="conversation_id is required")
 
-    (latest_human_message, latest_assistant_message) = (
+    (latest_human_message, latest_assistant_message, tool_messages) = (
         chat_service.send_message(user_id, request.app.state.agent, message_content.content, conversation_id, db))
 
     return MessageTurnOut(
