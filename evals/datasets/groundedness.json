@@ -1,0 +1,36 @@
+[
+  {
+    "name": "berlin_weather",
+    "input": "What is the weather in Berlin right now?",
+    "retrieval_context": [
+      "Berlin: 14 C, cloudy, wind 12 km/h from the west. Humidity 71 percent."
+    ],
+    "additional_metadata": {
+      "difficulty": "easy"
+    },
+    "comments": "All the numbers are right there. Fail = it adds a forecast for tomorrow."
+  },
+  {
+    "name": "sparse_context",
+    "input": "What was the container volume at the Port of Hamburg last year, and what caused the change?",
+    "retrieval_context": [
+      "Hamburg's port handled 7.9 million TEU last year."
+    ],
+    "additional_metadata": {
+      "difficulty": "medium"
+    },
+    "comments": "Volume is in context. The cause is NOT, and the model can't know it. Pass = gives 7.9M TEU and says the cause isn't in the results."
+  },
+  {
+    "name": "contradictory_context",
+    "input": "How many people live in Reykjavik?",
+    "retrieval_context": [
+      "Reykjavik has a population of approximately 140,000.",
+      "The Reykjavik capital region is home to around 240,000 residents."
+    ],
+    "additional_metadata": {
+      "difficulty": "hard"
+    },
+    "comments": "Two numbers that count different things. Pass = explains city vs region instead of picking one."
+  }
+]

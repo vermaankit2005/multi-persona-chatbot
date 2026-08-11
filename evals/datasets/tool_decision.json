@@ -1,0 +1,46 @@
+[
+    {
+        "name": "arithmetic",
+        "input": "What is 6789 * 1234?",
+        "expected_tools": [],
+        "additional_metadata": {
+            "difficulty": "easy"
+        },
+        "comments": "Nothing to look up. If this searches, tool calling is broken."
+    },
+    {
+        "name": "weather_berlin",
+        "input": "What is the weather in Berlin right now?",
+        "expected_tools": [
+            {
+                "name": "tavily_search"
+            }
+        ],
+        "additional_metadata": {
+            "difficulty": "medium"
+        },
+        "comments": "Clearly live data. The agent must notice 'right now'."
+    },
+    {
+        "name": "capital_of_france",
+        "input": "What is the capital of France?",
+        "expected_tools": [],
+        "additional_metadata": {
+            "difficulty": "hard"
+        },
+        "comments": "Easy fact the model already knows. A search-happy agent looks it up anyway and wastes your Tavily quota."
+    },
+    {
+        "name": "todays_headline",
+        "input": "What is the top news headline today?",
+        "expected_tools": [
+            {
+                "name": "tavily_search"
+            }
+        ],
+        "additional_metadata": {
+            "difficulty": "hard"
+        },
+        "comments": "The model knows it cannot know 'today', so it must search instead of answering from memory."
+    }
+]

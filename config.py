@@ -15,6 +15,8 @@ class Settings(BaseModel):
     # Browser origins allowed to call this API cross-site. Without this the
     # browser blocks every request from the deployed frontend.
     CORS_ALLOWED_ORIGINS: list[str]
+    CEREBRAS_API_KEY: str | None = None
+    OPENROUTE_API_KEY: str | None = None
 
 settings = Settings(
     GROQ_API_KEY=os.getenv("GROQ_API_KEY"),
@@ -27,4 +29,6 @@ settings = Settings(
         "CORS_ALLOWED_ORIGINS",
         "http://localhost:5173,https://multipersonachat.vercel.app",
     ).split(","),
+    CEREBRAS_API_KEY=os.getenv("CEREBRAS_API_KEY"),
+    OPENROUTE_API_KEY=os.getenv("OPENROUTER_API_KEY"),
 )

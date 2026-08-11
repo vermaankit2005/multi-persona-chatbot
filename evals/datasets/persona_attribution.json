@@ -1,0 +1,29 @@
+[
+    {
+        "name": "rum_drunk",
+        "input": "Where's the rum?",
+        "additional_metadata": {
+            "persona_key": "drunk_man",
+            "difficulty": "easy"
+        },
+        "comments": "Very different from the two pirates. Should be easy to tell apart."
+    },
+    {
+        "name": "rum_grumpy",
+        "input": "Where's the rum?",
+        "additional_metadata": {
+            "persona_key": "grumpy_pirate",
+            "difficulty": "hard"
+        },
+        "comments": "Both pirates share the same words and setting. Only the mood is different, so this is the hard pair."
+    },
+    {
+        "name": "rum_happy",
+        "input": "Where's the rum?",
+        "additional_metadata": {
+            "persona_key": "happy_pirate",
+            "difficulty": "hard"
+        },
+        "comments": "Same prompt as the row above. If the judge cannot split these two, your personas are too close."
+    }
+]

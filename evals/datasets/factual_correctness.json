@@ -1,0 +1,29 @@
+[
+    {
+        "name": "titanic_year",
+        "input": "Pirate, what year did the Titanic sink?",
+        "expected_output": "1912",
+        "additional_metadata": {
+            "difficulty": "easy"
+        },
+        "comments": "Very well known date. The 'Pirate,' prefix must not change the factual answer."
+    },
+    {
+        "name": "speed_of_light",
+        "input": "What is the speed of light in a vacuum, in kilometres per second?",
+        "expected_output": "About 299,792 km/s (roughly 300,000 km/s)",
+        "additional_metadata": {
+            "difficulty": "medium"
+        },
+        "comments": "A fixed constant the model knows reliably. Tests factual accuracy without depending on shaky arithmetic."
+    },
+    {
+        "name": "longest_river",
+        "input": "Which is the longest river in the world?",
+        "expected_output": "The Nile (the Amazon is also accepted if the answer explains why)",
+        "additional_metadata": {
+            "difficulty": "hard"
+        },
+        "comments": "Two answers are defensible. Tests if the judge is too strict and if the model explains itself."
+    }
+]

@@ -1,0 +1,24 @@
+[
+    {
+        "name": "parrot_name_turn_8",
+        "scenario": "The user says a fact at turn 1 and asks about it at turn 8. The window keeps the last 20 message rows, which is 10 turns, so the fact is still there.",
+        "expected_outcome": "The assistant says the parrot is called Biscuit.",
+        "additional_metadata": {
+            "fact": "Biscuit",
+            "asked_at_turn": 8,
+            "turns_in_window": 10,
+            "difficulty": "medium"
+        },
+        "comments": "Window math: 20 rows / 2 rows per turn = 10 turns. Turn 8 is still inside. Check this against repository/message_repo.py.",
+        "turns": [
+            { "role": "user", "content": "My parrot is called Biscuit." },
+            { "role": "user", "content": "What's the weather like at sea today?" },
+            { "role": "user", "content": "Do you like ships?" },
+            { "role": "user", "content": "What's your favourite food?" },
+            { "role": "user", "content": "Tell me about the Caribbean." },
+            { "role": "user", "content": "How do I tie a bowline knot?" },
+            { "role": "user", "content": "What's 12 times 12?" },
+            { "role": "user", "content": "What is my parrot called?" }
+        ]
+    }
+]

@@ -1,0 +1,46 @@
+[
+    {
+        "name": "parrot_name_aged_out",
+        "scenario": "The user says a fact at turn 1 and asks about it at turn 14. The window keeps the last 20 message rows, which is 10 turns, so turn 1 is gone.",
+        "expected_outcome": "The assistant says it does not have that information. Saying 'Biscuit' with confidence is a fail. Making up a different name is a worse fail.",
+        "additional_metadata": {
+            "fact": "Biscuit",
+            "asked_at_turn": 14,
+            "turns_in_window": 10,
+            "difficulty": "hard",
+            "note": "The fact is stored so the judge can fail a confident right answer AND a confident wrong one."
+        },
+        "comments": "Window math: turn 1 leaves the window at turn 11, so turn 14 is safely past the edge.",
+        "turns": [
+            { "role": "user", "content": "My parrot is called Biscuit." },
+            { "role": "user", "content": "What's the weather like at sea today?" },
+            { "role": "user", "content": "Do you like ships?" },
+            { "role": "user", "content": "What's your favourite food?" },
+            { "role": "user", "content": "Tell me about the Caribbean." },
+            { "role": "user", "content": "How do I tie a bowline knot?" },
+            { "role": "user", "content": "What's 12 times 12?" },
+            { "role": "user", "content": "Tell me a joke about the sea." },
+            { "role": "user", "content": "What's the best rum?" },
+            { "role": "user", "content": "How do I read a compass?" },
+            { "role": "user", "content": "What's the deepest part of the ocean?" },
+            { "role": "user", "content": "Recommend me a book about sailing." },
+            { "role": "user", "content": "What's your opinion on the navy?" },
+            { "role": "user", "content": "What is my parrot called?" }
+        ]
+    },
+    {
+        "name": "never_stated_control",
+        "scenario": "The user asks about a fact that was never said anywhere in the chat.",
+        "expected_outcome": "The assistant says it does not know. It must not make up a name.",
+        "additional_metadata": {
+            "fact": null,
+            "difficulty": "easy",
+            "note": "Control row. Splits 'forgot because the window dropped it' from 'makes things up whenever asked about the user'."
+        },
+        "turns": [
+            { "role": "user", "content": "Hello there." },
+            { "role": "user", "content": "What's the weather like at sea today?" },
+            { "role": "user", "content": "What is my parrot called?" }
+        ]
+    }
+]

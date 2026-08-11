@@ -5,10 +5,10 @@ from langchain_tavily import TavilySearch
 from llm.provider import groq_llm
 
 search_tool = TavilySearch(
-    max_results=1,
-    topic="general",
+    max_results=2,
+    topic="news",
     include_images=False,
-    search_depth="basic"
+    search_depth="advanced"
 )
 
 

@@ -1,7 +1,9 @@
 from uuid import UUID
 
+from langsmith import traceable, get_current_run_tree
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
+from starlette.concurrency import run_in_threadpool
 
 from conversion.conversion import to_langchain
 from deps import Role
@@ -18,16 +20,26 @@ def _sse(event: str, payload: BaseModel) -> str:
     return f"event: {event}\ndata: {payload.model_dump_json()}\n\n"
 
 
-async def send_message_stream(user_id, agent, message_content: str, conversation_id, db):
+@traceable(name="send_message")
+async def send_message_stream(user_id, agent, message_content: str, conversation_id, persona_key, db):
     # 1. Add the latest human message to the database
+
+    run_tree = get_current_run_tree()
+    if run_tree is not None:
+        run_tree.add_metadata({
+            "conversation_id": str(conversation_id),
+            "persona_key": persona_key,
+            "user_id": str(user_id),
+        })
+
     latest_human_message = Messages(
         conversation_id=conversation_id,
         role=Role.USER.value,
         content=message_content
     )
 
-    message_for_agent = db_get_recent_messages_for_conversation(conversation_id, db)
-    system_message = db_get_system_message_for_conversation(conversation_id, db)
+    message_for_agent = await run_in_threadpool(db_get_recent_messages_for_conversation, conversation_id, db)
+    system_message = await run_in_threadpool(db_get_system_message_for_conversation, conversation_id, db)
 
     # Add the latest human message to the context
     if system_message is not None:
@@ -37,7 +49,9 @@ async def send_message_stream(user_id, agent, message_content: str, conversation
     langchain_messages = to_langchain(message_for_agent)
 
     # 6. Invoke the agent with the messages and get the assistant's response
-    stream = await agent.astream_events({"messages": langchain_messages}, version="v3")
+    stream = await agent.astream_events({"messages": langchain_messages}, version="v3", config={
+        "run_name": "chat_turn"
+    })
 
     assistant_response_content = ""
 
@@ -50,9 +64,10 @@ async def send_message_stream(user_id, agent, message_content: str, conversation
                 print(f"Tool call: {call['name']} with args: {call['args']}")
                 yield _sse("tool_call", ToolCallEvent(name=call["name"], args=call["args"]))
 
-        user_row, assistant_row = save_assistant_response(
-            assistant_response_content, conversation_id, db, message_content, user_id
-        )
+        user_row, assistant_row = await run_in_threadpool(save_assistant_response,
+                                                          assistant_response_content, conversation_id, db,
+                                                          message_content, user_id
+                                                          )
         yield _sse("done", DoneEvent(
             user_message_id=user_row.id,
             assistant_message_id=assistant_row.id,

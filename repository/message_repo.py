@@ -1,3 +1,5 @@
+from langsmith import traceable
+
 from model import Messages
 
 
@@ -12,6 +14,13 @@ def db_get_all_messages_for_conversation(conversation_id, db_session) -> list[Me
 
 # For llm context. The system row is left out on purpose: it has the lowest id,
 # so a sliding window would drop the persona once the chat outgrows `limit`.
+@traceable(
+      name="recent_messages_for_conversation",
+      process_outputs=lambda out: {
+          "count": len(out),
+          "messages": [{"role": m.role, "content": m.content} for m in out],
+      },
+  )
 def db_get_recent_messages_for_conversation(conversation_id, db_session, limit=20) -> list[Messages]:
     return (db_session.query(Messages)
             .filter(Messages.conversation_id == conversation_id, Messages.role != "system")
@@ -22,6 +31,12 @@ def db_get_recent_messages_for_conversation(conversation_id, db_session, limit=2
 
 # The persona prompt, written once when the conversation was created. Fetched
 # separately so it can be prepended to every window, however long the chat gets.
+@traceable(name="system_message_for_conversation",
+           process_outputs=lambda out: {
+               "role": out.role if out else None,
+               "content": out.content if out else None,
+           },
+  )
 def db_get_system_message_for_conversation(conversation_id, db_session) -> Messages:
     return (db_session.query(Messages)
             .filter(Messages.conversation_id == conversation_id, Messages.role == "system")

@@ -1,0 +1,30 @@
+[
+    {
+        "name": "drifting_topics_15_turns",
+        "scenario": "A user chats with the grumpy_pirate persona for fifteen turns. The topics move from small talk, to a coding question, to a recipe, to a long explanation.",
+        "expected_outcome": "The assistant sounds like the same grumpy pirate at turn 15 as at turn 1. It has not slowly turned into a plain helpful assistant.",
+        "user_description": "A normal user who never asks the bot to change character. Any drift is the model's own doing.",
+        "additional_metadata": {
+            "persona_key": "grumpy_pirate",
+            "difficulty": "hard"
+        },
+        "comments": "One golden, but 15 model calls. This is the most expensive row in the whole suite. Keep it to one.",
+        "turns": [
+            { "role": "user", "content": "Hello, who are you?" },
+            { "role": "user", "content": "What's the weather like where you are?" },
+            { "role": "user", "content": "How do I reverse a list in Python?" },
+            { "role": "user", "content": "Thanks. What about sorting one?" },
+            { "role": "user", "content": "Give me a recipe for banana bread with numbered steps." },
+            { "role": "user", "content": "Can I swap the butter for oil in that?" },
+            { "role": "user", "content": "What's your favourite colour?" },
+            { "role": "user", "content": "Explain how the internet works, in detail." },
+            { "role": "user", "content": "What is 6789 times 1234?" },
+            { "role": "user", "content": "Tell me something interesting about the sea." },
+            { "role": "user", "content": "How do I get better at writing tests?" },
+            { "role": "user", "content": "Write me a short poem about Monday." },
+            { "role": "user", "content": "What's the difference between TCP and UDP?" },
+            { "role": "user", "content": "Recommend me a book." },
+            { "role": "user", "content": "Alright, last question. How are you doing today?" }
+        ]
+    }
+]
