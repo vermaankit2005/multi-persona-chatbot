@@ -1,3 +1,5 @@
+from langsmith import traceable, get_current_run_tree
+
 from conversion.conversion import to_langchain
 from deps import Role
 from model import Messages
@@ -6,7 +8,29 @@ from repository.message_repo import db_get_recent_messages_for_conversation, db_
     db_create_messages
 
 
-def send_message(user_id, agent, message_content: str, conversation_id, db) -> tuple[Messages, Messages, Messages]:
+# The trace is what the LangSmith evaluator reads, so it has to carry the same
+# keys the offline eval target returns: question, answer, context. `agent` and
+# `db` are left out on purpose - one is huge, the other is a live session.
+# process_inputs gets a dict keyed by argument name. process_outputs gets the
+# return value as it is, so it is indexed like the tuple below.
+@traceable(name="send_message_sync",
+           process_inputs=lambda inputs: {
+               "question": inputs["message_content"],
+           },
+           process_outputs=lambda outputs: {
+               "answer": outputs[1].content,
+               "context": outputs[3],
+               "tools_called": outputs[2],
+           })
+def send_message(user_id, agent, message_content: str, conversation_id, db) -> tuple[
+    Messages, Messages, list[str], list[str]]:
+
+    run_tree = get_current_run_tree()
+    if run_tree is not None:
+        run_tree.add_metadata({
+            "conversation_id": str(conversation_id),
+        })
+
     conversation = db_get_conversation_by_id(user_id, conversation_id, db)
     if conversation is None:
         raise LookupError(f"Conversation not found for user_id: {user_id}, conversation_id: {conversation_id}")
@@ -31,9 +55,11 @@ def send_message(user_id, agent, message_content: str, conversation_id, db) -> t
     # 6. Invoke the agent with the messages and get the assistant's response
     assistant_response = agent.invoke({"messages": langchain_messages})
 
-    tools_called = [
-        m.name for m in assistant_response["messages"] if m.type == "tool"
-    ]
+    # Keep the tool messages themselves: the names answer "did it search?", the
+    # contents are the search results the judge scores groundedness against.
+    tool_messages = [m for m in assistant_response["messages"] if m.type == "tool"]
+    tools_called = [m.name for m in tool_messages]
+    retrieved_context = [m.content for m in tool_messages]
 
     latest_assistant_message = Messages(
         conversation_id=conversation_id,
@@ -47,7 +73,7 @@ def send_message(user_id, agent, message_content: str, conversation_id, db) -> t
     # 7. Update the conversation title and updated_at based on the latest human message
     touch_conversation(user_id, conversation_id, message_content, db)
 
-    return latest_human_message, latest_assistant_message, tools_called
+    return latest_human_message, latest_assistant_message, tools_called, retrieved_context
 
 
 def touch_conversation(user_id, conversation_id, message_content: str, db):

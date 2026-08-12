@@ -28,8 +28,6 @@ async def send_message_stream(user_id, agent, message_content: str, conversation
     if run_tree is not None:
         run_tree.add_metadata({
             "conversation_id": str(conversation_id),
-            "persona_key": persona_key,
-            "user_id": str(user_id),
         })
 
     latest_human_message = Messages(

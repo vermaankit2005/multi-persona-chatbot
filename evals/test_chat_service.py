@@ -28,7 +28,7 @@ def test_tool_call(eval_db_session, eval_agent, eval_user, eval_create_dummy_con
     metric = ToolCorrectnessMetric()
 
     # def send_message(user_id, agent, message_content: str, conversation_id, db)
-    human_message, assistant_message, tools_called = send_message(eval_user.id, eval_agent, question,
+    human_message, assistant_message, tools_called, _ = send_message(eval_user.id, eval_agent, question,
                                                                   eval_create_dummy_conversation.id, eval_db_session)
 
     print(f"Assistant's response: {assistant_message.content}")
@@ -54,7 +54,7 @@ def test_no_tool_call(eval_db_session, eval_agent, eval_user, eval_create_dummy_
     metric = ToolCorrectnessMetric()
 
     # def send_message(user_id, agent, message_content: str, conversation_id, db)
-    human_message, assistant_message, tools_called = send_message(eval_user.id, eval_agent, question,
+    human_message, assistant_message, tools_called, _ = send_message(eval_user.id, eval_agent, question,
                                                                   eval_create_dummy_conversation.id, eval_db_session)
 
     print(f"Assistant's response: {assistant_message.content}")
@@ -84,7 +84,7 @@ def test_persona_consistency_single_turn(eval_db_session, eval_agent, eval_user,
     )
 
     # def send_message(user_id, agent, message_content: str, conversation_id, db)
-    human_message, assistant_message, tools_called = send_message(eval_user.id, eval_agent, question,
+    human_message, assistant_message, tools_called, _ = send_message(eval_user.id, eval_agent, question,
                                                                   eval_create_dummy_conversation.id, eval_db_session)
 
     print(f"Assistant's response: {assistant_message.content}")
@@ -114,7 +114,7 @@ def test_persona_consistency_multi_turn(eval_db_session, eval_agent, eval_user,
     turns = []
 
     for question in [question_1, question_2, question_3]:
-        human_message, assistant_message, tools_called = send_message(eval_user.id, eval_agent, question,
+        human_message, assistant_message, tools_called, _ = send_message(eval_user.id, eval_agent, question,
                                                                       eval_create_dummy_conversation_module_accumulated.id,
                                                                       eval_db_session)
 
@@ -149,7 +149,7 @@ def test_answer_correctness(eval_db_session, eval_agent, eval_user, eval_create_
     )
 
     # def send_message(user_id, agent, message_content: str, conversation_id, db)
-    human_message, assistant_message, tools_called = send_message(eval_user.id, eval_agent, question,
+    human_message, assistant_message, tools_called, _ = send_message(eval_user.id, eval_agent, question,
                                                                   eval_create_dummy_conversation.id, eval_db_session)
 
     print(f"Assistant's response: {assistant_message.content}")

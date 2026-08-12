@@ -100,7 +100,7 @@ def test_groundedness(eval_user, make_conversation, eval_db_session, monkeypatch
         holder["context"] = golden.retrieval_context
         conv = make_conversation()
 
-        _, assistant, tools_called = send_message(
+        _, assistant, tools_called, _ = send_message(
             eval_user.id, agent, golden.input, conv.id, eval_db_session)
 
         if "tavily_search" in tools_called:  # only score rows where it searched

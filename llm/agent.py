@@ -1,5 +1,6 @@
 from langchain.agents import create_agent
 from langchain.agents.middleware import PIIMiddleware, ModelCallLimitMiddleware, ToolCallLimitMiddleware
+from langchain_core.tools import tool
 from langchain_tavily import TavilySearch
 
 from llm.provider import groq_llm
@@ -11,11 +12,16 @@ search_tool = TavilySearch(
     search_depth="advanced"
 )
 
+@tool("tavily_search")
+def search_tool_func(query: str) -> str:
+    """Wrapper function for the TavilySearch tool."""
+    return search_tool.invoke({"query": query})
+
 
 def build_agent():
     return create_agent(
         model=groq_llm(),
-        tools=[search_tool],
+        tools=[search_tool_func],
         middleware=[
             ModelCallLimitMiddleware(run_limit=5, exit_behavior="end"),
             ToolCallLimitMiddleware(run_limit=3, exit_behavior="continue"),
