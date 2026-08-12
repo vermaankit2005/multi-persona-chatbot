@@ -20,8 +20,28 @@ def _sse(event: str, payload: BaseModel) -> str:
     return f"event: {event}\ndata: {payload.model_dump_json()}\n\n"
 
 
-@traceable(name="send_message")
-async def send_message_stream(user_id, agent, message_content: str, conversation_id, persona_key, db):
+def _collect(events: list[dict]) -> dict:
+    answer, tools_called, context = "", [], []
+    for event in events:
+        if event["type"] == "token":
+            answer += event["text"]
+        elif event["type"] == "summary":  # this is event which happens after the streaming of the complete answer
+            tools_called = event["tools_called"]
+            context = event["context"]
+    # "reference" is empty on live traffic. Same reason as the sync path: the
+    # shared evaluator maps to outputs.reference and a missing key breaks it.
+    return {"answer": answer, "context": context, "tools_called": tools_called}
+
+
+# Yields plain dicts, not wire text. _sse formatting happens one level up in
+# send_message_stream, so reduce_fn reads fields instead of parsing SSE back
+# apart - and changing the wire format cannot break the trace.
+@traceable(name="send_message_stream",
+           process_inputs=lambda inputs: {
+               "question": inputs["message_content"],
+           },
+           reduce_fn=_collect)
+async def _stream_events(user_id, agent, message_content: str, conversation_id, persona_key, db):
     # 1. Add the latest human message to the database
 
     run_tree = get_current_run_tree()
@@ -47,9 +67,7 @@ async def send_message_stream(user_id, agent, message_content: str, conversation
     langchain_messages = to_langchain(message_for_agent)
 
     # 6. Invoke the agent with the messages and get the assistant's response
-    stream = await agent.astream_events({"messages": langchain_messages}, version="v3", config={
-        "run_name": "chat_turn"
-    })
+    stream = await agent.astream_events({"messages": langchain_messages}, version="v3")
 
     assistant_response_content = ""
 
@@ -57,21 +75,48 @@ async def send_message_stream(user_id, agent, message_content: str, conversation
         async for message in stream.messages:
             async for delta in message.text:
                 assistant_response_content += delta
-                yield _sse("token", TokenEvent(text=delta))
+                yield {"type": "token", "text": delta}
             for call in await message.tool_calls:
                 print(f"Tool call: {call['name']} with args: {call['args']}")
-                yield _sse("tool_call", ToolCallEvent(name=call["name"], args=call["args"]))
+                yield {"type": "tool_call", "name": call["name"], "args": call["args"]}
+
+        final_state = await stream.output()
+        tool_messages = [m for m in final_state["messages"] if m.type == "tool"]
+        yield {
+            "type": "summary",
+            "tools_called": [m.name for m in tool_messages],
+            "context": [m.content for m in tool_messages],
+        }
 
         user_row, assistant_row = await run_in_threadpool(save_assistant_response,
                                                           assistant_response_content, conversation_id, db,
                                                           message_content, user_id
                                                           )
-        yield _sse("done", DoneEvent(
-            user_message_id=user_row.id,
-            assistant_message_id=assistant_row.id,
-        ))
+        yield {
+            "type": "done",
+            "user_message_id": user_row.id,
+            "assistant_message_id": assistant_row.id,
+        }
     except Exception as exc:
-        yield _sse("error", ErrorEvent(detail=str(exc)))
+        yield {"type": "error", "detail": str(exc)}
+
+
+# The route streams this one. It only turns events into wire format - the
+# "summary" event is for the trace and is deliberately not sent to the client.
+async def send_message_stream(user_id, agent, message_content: str, conversation_id, persona_key, db):
+    async for event in _stream_events(user_id, agent, message_content, conversation_id, persona_key, db):
+        kind = event["type"]
+        if kind == "token":
+            yield _sse("token", TokenEvent(text=event["text"]))
+        elif kind == "tool_call":
+            yield _sse("tool_call", ToolCallEvent(name=event["name"], args=event["args"]))
+        elif kind == "done":
+            yield _sse("done", DoneEvent(
+                user_message_id=event["user_message_id"],
+                assistant_message_id=event["assistant_message_id"],
+            ))
+        elif kind == "error":
+            yield _sse("error", ErrorEvent(detail=event["detail"]))
 
 
 def save_assistant_response(assistant_response_content,

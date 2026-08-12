@@ -16,53 +16,6 @@ judge = LocalModel(
 )
 
 
-# def test_groundedness(eval_user, eval_db_session, normal_agent_prompt):
-#     dataset = EvaluationDataset()
-#     dataset.add_goldens_from_json_file("evals/datasets/groundedness.json")
-#
-#     groundedness_metric = GEval(
-#         name="groundedness",
-#         model=judge,
-#         threshold=1,
-#         criteria="""
-#         You are a judge that evaluates the groundedness of an LLM's response to a user's question.
-#         Inputs:
-#             Input: User's question: {input}
-#             Retrieval context: Context retrieved from web search: {retrieval_context}
-#             Actual Output: LLM's response: {actual_output}
-#         """,
-#         evaluation_params=[
-#             SingleTurnParams.INPUT,
-#             SingleTurnParams.RETRIEVAL_CONTEXT,
-#             SingleTurnParams.ACTUAL_OUTPUT
-#         ]
-#     )
-#
-#     test_cases = []
-#
-#     for golden in dataset.goldens:
-#         agent = build_fake_agent(golden.retrieval_context)  # only the fake tool
-#
-#         messages = [
-#             SystemMessage(content=normal_agent_prompt),
-#             HumanMessage(content=golden.input),
-#             AIMessage(content="", tool_calls=[{
-#                 "id": "123", "name": "tavily_search", "args": {"query": golden.input}}]),
-#             ToolMessage(content="\n".join(golden.retrieval_context), tool_call_id="123"),
-#         ]
-#
-#         result = agent.invoke({"messages": messages})
-#         answer = result["messages"][-1].content
-#
-#         test_cases.append(LLMTestCase(
-#             input=golden.input,
-#             actual_output=answer,
-#             retrieval_context=golden.retrieval_context,
-#         ))
-#
-#     evaluate(test_cases=test_cases, metrics=[groundedness_metric])
-
-
 def test_groundedness(eval_user, make_conversation, eval_db_session, monkeypatch):
     dataset = EvaluationDataset()
     dataset.add_goldens_from_json_file("evals/datasets/groundedness.json")

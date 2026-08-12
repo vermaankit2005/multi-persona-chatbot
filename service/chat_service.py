@@ -8,11 +8,6 @@ from repository.message_repo import db_get_recent_messages_for_conversation, db_
     db_create_messages
 
 
-# The trace is what the LangSmith evaluator reads, so it has to carry the same
-# keys the offline eval target returns: question, answer, context. `agent` and
-# `db` are left out on purpose - one is huge, the other is a live session.
-# process_inputs gets a dict keyed by argument name. process_outputs gets the
-# return value as it is, so it is indexed like the tuple below.
 @traceable(name="send_message_sync",
            process_inputs=lambda inputs: {
                "question": inputs["message_content"],
