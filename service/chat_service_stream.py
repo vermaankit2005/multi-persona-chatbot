@@ -88,14 +88,14 @@ async def _stream_events(user_id, agent, message_content: str, conversation_id, 
             "context": [m.content for m in tool_messages],
         }
 
-        user_row, assistant_row = await run_in_threadpool(save_assistant_response,
-                                                          assistant_response_content, conversation_id, db,
-                                                          message_content, user_id
-                                                          )
+        user_message_id, assistant_message_id = await run_in_threadpool(
+            save_assistant_response, assistant_response_content, conversation_id, db,
+            message_content, user_id
+        )
         yield {
             "type": "done",
-            "user_message_id": user_row.id,
-            "assistant_message_id": assistant_row.id,
+            "user_message_id": user_message_id,
+            "assistant_message_id": assistant_message_id,
         }
     except Exception as exc:
         yield {"type": "error", "detail": str(exc)}
@@ -123,7 +123,7 @@ def save_assistant_response(assistant_response_content,
                             conversation_id: UUID,
                             db: Session,
                             message_content: str,
-                            user_id: UUID) -> Messages:
+                            user_id: UUID) -> tuple[int, int]:
     # 1. Add the latest human message to the database
 
     latest_human_message = Messages(
@@ -144,7 +144,8 @@ def save_assistant_response(assistant_response_content,
     # 7. Update the conversation title and updated_at based on the latest human message
     touch_conversation(user_id, conversation_id, latest_human_message.content, db)
 
-    return latest_human_message, latest_assistant_message
+    # Resolve expired ORM attributes in the worker, not in the async stream.
+    return latest_human_message.id, latest_assistant_message.id
 
 
 def touch_conversation(user_id, conversation_id, message_content: str, db):
